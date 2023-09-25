@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mydb:
+    image: mysql
+    ports:
+    - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+
+  myapp:
+    build:
+      .
+    depends_on:
+      - mydb
+    ports:
+    - '8080:8080'

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adc.eshop.dao.OrderCusMapper">
+    <resultMap id="BaseCustomResult" type="com.adc.eshop.controller.vo.OrderCustomVO">
+        <result column="sum_price" jdbcType="INTEGER" property="sumPrice" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="dateOrder" />
+    </resultMap>
+    <sql id="BaseCustomResult">
+    create_time, create_time
+  </sql>
+</mapper>

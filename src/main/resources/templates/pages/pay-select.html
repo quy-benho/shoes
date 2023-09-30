@@ -1,0 +1,90 @@
+<!-- Copyright (c) 2019-2020 坝三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','pay-select')">
+</head>
+<body>
+<div class="page-main">
+    <div class="container confirm-box">
+        <form target="_blank" action="#" id="J_payForm" method="post">
+            <div class="section section-order">
+                <div class="order-info clearfix">
+                    <div class="fl">
+                        <h2 class="title">Đơn hàng đã được gửi thành công</h2>
+                        <input type="hidden" id="orderNoValue" th:value="${orderNo}">
+                        <p class="order-time" id="J_deliverDesc">Mã đơn：
+                            <th:block th:text="${orderNo}"></th:block>
+                        </p>
+                    </div>
+                    <div class="fr">
+                        <p class="total">
+                            Tổng tiền phải thanh toán：<span class="money"><em><th:block
+                                th:text="${totalPrice}"></th:block></em></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="section section-payment">
+                <div class="cash-title" id="J_cashTitle">
+                    Chọn phương thức thanh toán
+                </div>
+
+                <div class="payment-box ">
+                    <div class="payment-header clearfix">
+                        <h3 class="title">Thanh toán</h3>
+                        <span class="desc"></span>
+                    </div>
+                    <div class="payment-body">
+                        <ul class="clearfix payment-list J_paymentList J_linksign-customize">
+<!--                             <li class="J_alipay"> -->
+<!--                                 <input type="radio" name="payOnlineBank" id="momo" value="momo"> -->
+<!--                                 <img onclick="payOrder('momo')" th:src="@{/Appdata/image/pay/momo.png}" alt="Thanh toán qua Momo" -->
+<!--                                      style="margin-left: 0;"></li> -->
+<!--                             <li id="J_weixin"> -->
+<!--                                 <input type="radio" name="payOnlineBank" id="alipay" value="alipay"> -->
+<!--                                 <img onclick="payOrder('airpay')" th:src="@{/Appdata/image/pay/airpay.png}" alt="Thanh toán qua AirPay" -->
+<!--                                      style="margin-left: 0;"> -->
+<!--                             </li> -->
+                            <li id="J_vnpay">
+                                <input type="radio" name="payOnlineBank" id="vnpay" value="vnpay">
+                                <img onclick="payOrder('vnpay')" th:src="@{/Appdata/image/pay/vnpay.png}" alt="Thanh toán qua VNPAY"
+                                     style="margin-left: 0;">
+                            </li>
+                            <li id="J_vnpay">
+                                <input type="radio" name="payOnlineBank" id="cod" value="cod">
+                                <img onclick="payOrder('cod')" th:src="@{/Appdata/image/pay/cod.png}" alt="Thanh toán qua ship COD"
+                                     style="margin-left: 0;">
+                            </li>
+<!--                             <li class="J_bank"> -->
+<!--                                 <input type="radio" name="payOnlineBank" id="unionpay" value="unionpay"> -->
+<!--                                 <img th:src="@{/Appdata/image/pay/vietcombank.jpg}" alt="AirPay" -->
+<!--                                      style="margin-left: 0;"> -->
+<!--                             </li> -->
+                        </ul>
+                    </div>
+                </div>
+
+              
+
+               
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script type="text/javascript">
+    $('.J_bank').click(function () {
+        alert('Chưa được hỗ trợ, vui lòng chờ');
+    })
+
+    function payOrder(payType) {
+        var orderNo = $("#orderNoValue").val();
+        window.location.href = '/payPage?orderNo=' + orderNo + "&payPageType=" + payType;
+    }
+</script>
+</body>
+</html>

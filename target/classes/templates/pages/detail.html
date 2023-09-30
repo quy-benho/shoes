@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','detail')">
+</head>
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+
+<div id="detail">
+    <!-- nav -->
+    <nav th:replace="pages/header::nav-fragment"></nav>
+
+    <div class="dc">
+        <div class="content w">
+            <div class="title fl">Thông tin chi tiết sản phẩm</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="intro mt20 w clearfix">
+        <div class="left fl" style="position: relative;">
+            <div class="swiper-container fl">
+                <img th:src="@{${goodsDetail.goodsCoverImg}}">
+            </div>
+        </div>
+        <div class="right fr">
+            <div class="h3 p10 mt20" th:text="${goodsDetail.goodsName}">Thu Dang Store</div>
+            <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.goodsIntro}">Thu Dang Store</div>
+            <h4>Chọn màu:</h4>
+            <select class="form-control col-sm-4 custom-select"
+                    id="selectColor"
+                    data-placeholder="Chọn màu:">
+                <option value="1" text="Đen"></option>
+            </select>
+            <h4>Chọn size:</h4>
+            <select class="form-control col-sm-4 custom-select"
+                    id="selectSize"
+                    data-placeholder="Chọn size:">
+                <option value="1" text="36"></option>
+            </select>
+            <h4>Chọn số lượng:</h4>
+            <input id="selectQuantity" name="selectQuantity" type="number" class="form-control col-sm-4 custom-select" value="1" step="1" min="1" max="5" />
+            <div th:if="${goodsDetail.sellingPrice} < ${goodsDetail.originalPrice}" class="item_price mr40 ml20 mt10">
+                <th:block th:text="'Giá sale: ' + ${goodsDetail.formatPrice()}"></th:block>
+                <del>
+                    <div th:text="'Giá goc: ' + ${goodsDetail.formatOriginalPrice()}"></div>
+                </del>
+            </div>
+            <div th:if="${goodsDetail.sellingPrice} > ${goodsDetail.originalPrice}" class="item_price mr40 ml20 mt10">
+                <th:block th:text="'Giá bán: ' + ${goodsDetail.formatPrice()}"></th:block>
+            </div>
+
+            <div class="order">
+                <input class="car" type="button" th:onclick="'saveToCart('+${goodsDetail.goodsId}+',true)'" value="Mua ngay"/>
+                <input class="car" type="button" th:onclick="'saveToCart('+${goodsDetail.goodsId}+',false)'" value="Thêm giỏ hàng"/>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="goods mt20 w clearfix" th:utext="${goodsDetail.goodsDetailContent}">
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/Appdata/js/search.js}" type="text/javascript"></script>
+<script type="text/javascript">
+
+	const goodsId = [[${goodsDetail.goodsId}]];
+	let details = [];
+
+	$.ajax({
+	    type: 'POST',
+	    url: `/goods/detail/${goodsId}`,
+	    contentType: 'application/json',
+	    success: function (result) {
+			if (result && result.length>0) {
+				details = result;
+				$("#selectColor").empty();
+				details.forEach(item => {
+					$("#selectColor").append(new Option(item.color, item.color));
+				});
+				updateGoodsSize();
+			}
+	    },
+	    error: function () {
+	        swal("Lỗi hệ thống", {
+	            icon: "error",
+	        });
+	    }
+	});
+
+	$('#selectColor').change(function() {
+		updateGoodsSize();
+	});
+	
+	const updateGoodsSize = () => {
+		const color = $('#selectColor').val();
+		const sizes = details.find(item => item.color == color).sizes;
+		if (sizes && sizes.length>0) {
+			$("#selectSize").empty();
+			sizes.forEach(size => {
+				$("#selectSize").append(new Option(size, size));
+			});
+		}
+	}
+
+	const checkLogin = id => {
+		if ([[${session.User==null}]]) {
+			localStorage.setItem("goodsId", id);
+			window.location.href = "/login";
+		}
+	}
+
+	function saveToCart(id, goToCart) {
+    	checkLogin(id);
+        var goodsCount = $('#selectQuantity').val();
+        var goodsColor = $('#selectColor option:selected').text();
+        var goodsSize = $('#selectSize option:selected').text();
+        
+        if (!goodsColor) {
+        	swal("Chưa chọn màu và size!", {
+                icon: "warning",
+            });
+            return;
+        }
+        
+       	if (goodsCount > 5) {
+       		swal("Số lượng tối đa 5 sản phẩm!", {
+                icon: "error",
+            });
+            return;
+       	} else if (goodsCount <= 0) {
+       		swal("Số lượng tối thiểu 1 sản phẩm!", {
+                icon: "error",
+            });
+            return;
+       	}
+        var data = {
+            "goodsId": id,
+            "goodsCount": goodsCount,
+            "goodsColor": goodsColor,
+            "goodsSize": goodsSize
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    swal({
+                        title: "Sản phẩm đã được thêm vào giỏ hàng",
+                        text: "Xác nhận",
+                        icon: "success",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((flag) => {
+                    		if (goToCart) {
+                    			window.location.href = '/shop-cart';
+                    		} else {
+                    			window.location.reload();
+                    		}
+                        }
+                    );
+                } else {
+                	swal({
+                        title: "Số lượng đạt tối đa",
+                        text: result.message,
+                        icon: "warning",
+                        buttons: ["Quay lại", "Xem giỏ hàng"],
+                        dangerMode: true,
+                    }).then((flag) => {
+                    		if (flag) {
+                    			window.location.href = '/shop-cart';
+                    		}
+                        }
+                    );
+                }
+            },
+            error: function () {
+                swal("Lỗi hệ thống", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

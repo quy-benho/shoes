@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment">
+</header>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+        vertical-align: text-top;
+        padding-top: 2px;
+    }
+    #formButton {
+		text-align: center;
+		margin-top: 10px;
+    }
+    #formButton button {
+		width: 115px;
+    }
+</style>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <div th:replace="admin/header::header-nav"></div>
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+        	<div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Tìm kiếm</h3>
+                    </div> <!-- /.card-body -->
+						<div class="card-body">
+							<form id="searchForm">
+								<div class="row pt-0">
+									<div class="col-12">
+										<div class="form-group row">
+											<label for="goodsId" class="col-sm-2 col-form-label">Mã sản phẩm:</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" id="goodsId" placeholder="Nhập mã sản phẩm">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="formButton">
+									<button id="btn-reset" type="reset" class="btn btn-secondary mr-2">
+										<i class="fa fa-eraser"></i>&nbsp; Làm mới
+									</button>
+									<button id="btn-search" type="button" class="btn btn-primary">
+										<i class="fa fa-search"></i>&nbsp; Tìm kiếm
+									</button>
+								</div>
+							</form>
+						</div>
+						<!-- /.card-body -->
+					</div>
+            </div><!-- /.container-fluid -->
+        
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Chi tiết sản phẩm</h3>
+                    </div> <!-- /.card-body -->
+                    <div class="card-body">
+                        <div class="grid-btn">
+                            <button class="btn btn-info" onclick="detailAdd()"><i
+                                    class="fa fa-plus"></i>&nbsp;Thêm
+                            </button>
+                            <button class="btn btn-warning" onclick="detailEdit()"><i
+                                    class="fa fa-pencil-square-o"></i>&nbsp;Sửa
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteDetail()"><i
+                                    class="fa fa-trash-o"></i>&nbsp;Xóa
+                            </button>
+                        </div>
+                        <br>
+                        <table id="jqGrid" class="table table-bordered">
+                        </table>
+                        <div id="jqGridPager"></div>
+                    </div><!-- /.card-body -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+        <div class="content">
+            <div class="modal fade" id="goodsDetailModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h5 class="modal-title">Thông tin đặt hàng</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form id="categoryForm">
+                                <div class="form-group">
+                                    <div class="alert alert-danger" id="edit-error-msg" style="display: none;">
+                                        Vui lòng nhập đầy đủ thông tin!
+                                    </div>
+                                </div>
+<!--                                <input type="hidden" class="form-control" id="categoryId" name="categoryId">-->
+<!--                                <input type="hidden" id="categoryLevel" th:value="${categoryLevel}">-->
+<!--                                <input type="hidden" id="parentId" th:value="${parentId}">-->
+<!--                                <input type="hidden" id="backParentId" th:value="${backParentId}">-->
+                                <div class="form-group">
+                                    <label for="goodsColor" class="control-label">Màu giày:</label>
+                                    <input type="text" class="form-control" id="goodsColor" name="goodsColor"
+                                           placeholder="Màu giày" required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="goodsSize" class="control-label">Size:</label>
+                                    <input type="number" class="form-control" id="goodsSize" name="goodsSize"
+                                           placeholder="Size" required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="goodsQuantity" class="control-label">Số lượng:</label>
+                                    <input type="number" class="form-control" id="goodsQuantity" name="goodsQuantity"
+                                           placeholder="Số lượng" required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="goodsId" class="control-label">Mã giày:</label>
+                                    <input type="number" class="form-control" id="goodsId_" name="goodsId"
+                                           placeholder="Mã giày" required="true">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="saveButton">Lưu</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal -->
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- jqgrid -->
+<script th:src="@{/admin/plugins/jqgrid-5.5.2/jquery.jqGrid.min.js}"></script>
+<script th:src="@{/admin/plugins/jqgrid-5.5.2/grid.locale-cn.js}"></script>
+
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/dist/js/goods_detail.js}"></script>
+</body>
+</html>

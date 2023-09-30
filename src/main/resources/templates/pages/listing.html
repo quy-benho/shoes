@@ -1,0 +1,182 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','search')">
+</head>
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+<!-- nav -->
+<nav th:replace="pages/header::nav-fragment"></nav>
+
+<style>
+	.sidebar-title{
+		border-bottom: 1px solid #ccc; 
+		font-weight: 600;
+		padding: 10px 0;
+		margin-bottom: 10px;
+		cursor: pointer;
+	}
+	.sidebar-filter{
+		display: block;
+		font-weight: 200;
+		padding: 6px 0;
+		font-size: 15px;
+	}
+	.sidebar-filter:hover{
+		color: #1baeae;
+		font-weight: 500;
+	}
+	.sidebar-title .fl-r{
+		float: right;
+		font-weight: 100;
+		font-size: 80%;
+		user-select:none;
+	}
+</style>
+
+<div class="classify">
+    <div class="category">
+        <div class="category_bar">
+            <th:block th:if="${searchPageCategoryVO!=null}">
+                <div class="fm c">
+                    <a href="##" class="qqq" th:text="${searchPageCategoryVO.secondLevelCategoryName}">newbee-mall</a>
+                    <div>
+                        <th:block th:each="thirdLevelCategory : ${searchPageCategoryVO.thirdLevelCategoryList}">
+                            <a th:href="@{${'/search?goodsCategoryId='+thirdLevelCategory.categoryId}}"
+                               th:text="${thirdLevelCategory.categoryName}">Thu Dang Store</a>
+                        </th:block>
+                    </div>
+                </div>
+                <i><img src="mall/image/right-@1x.png" alt=""></i>
+                <div class="findword">"
+                    <th:block th:text="${searchPageCategoryVO.currentCategoryName}"></th:block>
+                    "
+                </div>
+            </th:block>
+            <th:block th:if="${searchPageCategoryVO==null}">
+                <th:block th:if="${keyword!=null and keyword !=''}">
+                    <div class="findword">Tìm kiếm "
+                        <th:block th:text="${keyword}"></th:block>
+                        "
+                    </div>
+                </th:block>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<div class="sort">
+    <div class="list">
+        <a th:href="@{'/listing'}">
+            <h2 class="active">Danh sách sản phẩm</h2>
+        </a>
+    </div>
+</div>
+
+<div class="goods_item center">
+    <div class="main center" style="height: auto;">
+    	<div class="left-sidebar" style="width: 20%; float: left; height: 100%;">
+			<div style="padding: 5px 20px 5px 0;">
+				<h4 class="sidebar-title" onclick="toggleSlide('price-filter')">
+					Tìm theo
+					<span class="fl-r price-filter">—</span>
+				</h4>
+				<a class="sidebar-filter price-filter" href="?orderBy=new">Sản phẩm mới</a>
+				<a class="sidebar-filter price-filter" th:href="'?orderBy=price_asc' + '&size=' + ${size==null?'':size} + '&color=' + ${color==null?'':color}">Giá từ thấp đến cao</a>
+				<a class="sidebar-filter price-filter" th:href="'?orderBy=price_desc'  + '&size=' + ${size==null?'':size} + '&color=' + ${color==null?'':color}">Giá từ cao đến thấp</a>
+				<a class="sidebar-filter price-filter" th:href="'?price=filter_1'  + '&size=' + ${size==null?'':size} + '&color=' + ${color==null?'':color}">Giá nhỏ hơn 1 triệu</a>
+				<a class="sidebar-filter price-filter" th:href="'?price=filter_2'  + '&size=' + ${size==null?'':size} + '&color=' + ${color==null?'':color}">Giá từ 1 triệu - 3 triệu</a>
+				<a class="sidebar-filter price-filter" th:href="'?price=filter_3'  + '&size=' + ${size==null?'':size} + '&color=' + ${color==null?'':color}">Giá lớn hơn 3 triệu</a>
+				<br>
+
+				<h4 class="sidebar-title" onclick="toggleSlide('category-filter')">
+					Thương hiệu
+					<span class="fl-r category-filter">—</span>
+				</h4>
+				<a th:each="category : ${allCategories}" th:text="${category.categoryName}" th:href="@{'/listing?parentId='} + ${category.categoryId} + '&orderBy='+${orderBy==null?'':orderBy}" class="sidebar-filter category-filter"></a>
+				<br>
+
+				<h4 class="sidebar-title" onclick="toggleSlide('color-filter')">
+					Màu sắc
+					<span class="fl-r color-filter">—</span>
+				</h4>
+				<a th:each="color : ${allColors}" th:text="'Màu '+${color}" th:href="@{'/listing?color='} + ${color} + '&orderBy='+${orderBy==null?'':orderBy}" class="sidebar-filter color-filter"></a>
+				<br>
+
+				<h4 class="sidebar-title" onclick="toggleSlide('size-filter')">
+					Size
+					<span class="fl-r size-filter">—</span>
+				</h4>
+				<a th:each="size : ${allSizes}" th:text="'Size '+${size}" th:href="@{'/listing?size='} + ${size} + '&orderBy='+${orderBy==null?'':orderBy}" class="sidebar-filter size-filter"></a>
+				<br>
+			</div>
+		</div>
+		<div class="right-list" style="width: 80%; float: left; height: 100%;">
+			<th:block th:if="${#lists.isEmpty(pageResult.list)}">
+	            <img style="margin-top: 16px;padding: 16px 20px;" th:src="@{/Appdata/image/null-content.png}">
+	        </th:block>
+	        <th:block th:unless="${#lists.isEmpty(pageResult.list)}">
+		         <div th:each="goods : ${pageResult.list}" class="item_card_frame" style="width: 24%;">
+		             <div class="item_card">
+		             	<a th:href="@{'/goods/detail/'+${goods.goodsId}}" target="_blank">
+		             		<img th:src="@{${goods.goodsCoverImg}}" th:alt="${goods.goodsName}">
+		             	</a>
+		             </div>
+		             <div class="item_brand">
+		             	<a th:href="@{'/goods/detail/'+${goods.goodsId}}" th:text="${goods.goodsName}" target="_blank"></a>
+		             </div>
+		             <div class="item_sub_intro" th:text="${goods.goodsIntro}"></div>
+		             <div class="item_price" th:text="${goods.formatPrice()}"></div>
+		         </div>
+	        </th:block>
+		</div>
+	        
+        <div class="clear"></div>
+    </div>
+
+    <div class="pages">
+        <div class="page_wrap">
+            <th:block th:if="${null != pageResult and !#lists.isEmpty(pageResult.list)}">
+	            <span class="page_span1">
+	                 <a th:href="@{${pageResult.currPage==1}?'##':'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
+	                                    < Trước đó
+	                                </a>
+	                <th:block th:if="${pageResult.currPage-2 >=1}">
+	                	<a th:href="@{'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+	                       th:text="${pageResult.currPage -2}"></a>
+	                </th:block>
+	                <th:block th:if="${pageResult.currPage-1 >=1}">
+	               		<a th:href="@{'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+	                       th:text="${pageResult.currPage -1}"></a>
+	                </th:block>
+	                <a href="##" class="active" th:text="${pageResult.currPage}"></a>
+	                <th:block th:if="${pageResult.currPage+1<=pageResult.totalPage}">
+	                	<a th:href="@{'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+	                       th:text="${pageResult.currPage +1}"></a>
+	                </th:block>
+	                <th:block th:if="${pageResult.currPage+2<=pageResult.totalPage}">
+	                	<a th:href="@{'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+	                       th:text="${pageResult.currPage +2}">1</a>
+	                </th:block>
+	                <a th:href="@{${pageResult.currPage>=pageResult.totalPage}?'##':'/listing?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
+	                	Trang tiếp theo >
+	                </a>
+				</span>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/Appdata/js/search.js}" type="text/javascript"></script>
+<script type="text/javascript">
+	const toggleSlide = clsName => {
+		$(`a.${clsName}`).slideToggle(250);
+		let sign = $(`span.${clsName}`).text();
+		$(`span.${clsName}`).text(sign == '—' ? '＋' : '—');
+	}
+</script>
+</body>
+</html>

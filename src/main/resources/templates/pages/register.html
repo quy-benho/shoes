@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" th:href="@{Appdata/css/common.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/login.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/header.css}">
+    <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+</head>
+<body>
+<div class="top center">
+    <div class="logo center">
+        <a href="./index.html" target="_blank"><img src="Appdata/image/logo-thu-dang.png" alt=""></a>
+    </div>
+</div>
+
+<div class="form center">
+    <div class="login">
+        <div class="login_center">
+            <div class="login_top">
+                <div class="left fl">Đăng ký</div>
+                <div class="right fr">Đã có tài khoản？<a href="login.html" target="_self">Đăng nhập</a></div>
+                <div class="clear"></div>
+                <div class="under-line center"></div>
+            </div>
+            <form id="registerForm" onsubmit="return false;" action="##">
+                <div class="login_main center">
+                    <div class="login-info">Số điện thoại:&nbsp;<input class="login-info-input" type="text" name="loginName"
+                                                             placeholder="Nhập số điện thoại" id="loginName"/>
+                    </div>
+                    <div class="login-info">Mật&nbsp;&nbsp;&nbsp;&nbsp;khẩu:&nbsp;<input class="login-info-input"
+                                                                                    type="password"
+                                                                                    name="password"
+                                                                                    id="password"
+                                                                                    placeholder="Nhập mật khẩu"/>
+                    </div>
+                    <div class="login-info">
+                        Captra:&nbsp;
+                        <input class="login-info-input verify-code" type="text" name="verifyCode" id="verifyCode"
+                               placeholder="Nhập mã captra"/>
+                        <img alt="Nhấp vào hình ảnh để làm mới！" style="top: 16px;position: relative;" th:src="@{/common/kaptcha}"
+                             onclick="this.src='/common/kaptcha?d='+new Date()*1">
+                    </div>
+                </div>
+                <div class="login_submit">
+                    <input class="submit" type="button" onclick="register()" value="Đăng ký ngay">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+
+    function register() {
+        var loginName = $("#loginName").val();
+        if (!validPhoneNumber(loginName)) {
+            swal('Vui lòng nhập tên đăng nhập chính xác (SĐT)', {
+                icon: "error",
+            });
+            return false;
+        }
+        var password = $("#password").val();
+        if (!validPassword(password)) {
+            swal('Vui lòng nhập đúng định dạng mật khẩu (6-20 ký tự)', {
+                icon: "error",
+            });
+            return false;
+        }
+        var verifyCode = $("#verifyCode").val();
+        if (!validLength(verifyCode, 5)) {
+            swal('Vui lòng nhập mã xác minh chính xác', {
+                icon: "error",
+            });
+            return false;
+        }
+        var params = $("#registerForm").serialize();
+        var url = '/register';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: params,
+            success: function (result) {
+                if (result.resultCode == 200) {
+                	swal("Đăng ký thành công", {
+                        icon: "success",
+                    }).then(() => {
+                    	$.ajax({
+                            type: 'POST',
+                            url: '/login',
+                            data: params,
+                            success: function (result) {
+                                if (result.resultCode == 200) {
+                                	window.location.href = '/index';
+                                } else {
+                                    swal(result.message, {
+                                        icon: "error",
+                                    });
+                                }
+                                ;
+                            },
+                            error: function () {
+                                swal("Lỗi hệ thống", {
+                                    icon: "error",
+                                });
+                            }
+                        });
+                    });
+                    ;
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("Lỗi hệ thống", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+</script>
+</html>

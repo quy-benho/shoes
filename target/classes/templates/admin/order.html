@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment">
+</header>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+        vertical-align: text-top;
+        padding-top: 2px;
+    }
+
+    a {
+        color: #1baeae;
+        text-decoration: none;
+        background-color: transparent;
+        -webkit-text-decoration-skip: objects;
+    }
+
+    a:hover {
+        color: white;
+        background-color: #1baeae;
+    }
+    .row {
+    	border: none;
+    	padding-top: 5px;
+    	margin-bottom: 5px;
+    }
+    #formButton {
+		text-align: center;
+		margin-top: 10px;
+    }
+    #formButton button {
+		width: 115px;
+    }
+    .form-check-input{
+    	position: relative;
+	    margin-top: 0;
+	    margin-left: 0;
+    }
+    .form-check-label{
+    	margin-right: 20px;
+    	user-select: none;
+    }
+
+</style>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <div th:replace="admin/header::header-nav"></div>
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+        	<div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Tìm kiếm</h3>
+                    </div> <!-- /.card-body -->
+						<div class="card-body">
+							<form id="searchForm">
+								<div class="row pt-0">
+									<div class="col-12">
+										<div class="form-group row">
+											<label for="orderNo" class="col-sm-2 col-form-label">Mã đơn hàng:</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" id="orderNo" placeholder="Nhập mã đơn hàng">
+											</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-group row">
+											<label for="zzz" class="col-sm-2 col-form-label">Tổng tiền:</label>
+											<div class="col-sm-8 pt-2">
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="0" id="totalAmount0" name="totalAmountType"> 
+													<label class="form-check-label" for="totalAmount0">Nhỏ hơn 1 triệu</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="1" id="totalAmount1" name="totalAmountType"> 
+													<label class="form-check-label" for="totalAmount1">Từ 1 triệu - 3 triệu</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="2" id="totalAmount2" name="totalAmountType"> 
+													<label class="form-check-label" for="totalAmount2">Lớn hơn 3 triệu</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row pt-0">
+									<div class="col-12">
+										<div class="form-group row">
+											<label for="orderNo" class="col-sm-2 col-form-label">Tình trạng:</label>
+											<div class="col-sm-10 pt-2">
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="0" id="orderStatus0" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus0">Chưa thanh toán</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="1" id="orderStatus1" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus1">Đã thanh toán</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="4" id="orderStatus4" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus4">Đặt ship COD</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="5" id="orderStatus5" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus5">Đang giao hàng</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="2" id="orderStatus2" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus2">Giao thành công</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="3" id="orderStatus3" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus3">Hết hàng</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="-1" id="orderStatus-1" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus-1">Khách hủy đơn hàng</label>
+												</div>
+<!-- 												<div class="d-inline-block"> -->
+<!-- 													<input type="radio" class="form-check-input" value="-2" id="orderStatus-2" name="orderStatus">  -->
+<!-- 													<label class="form-check-label" for="orderStatus-2">Quá hạn</label> -->
+<!-- 												</div> -->
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="-3" id="orderStatus-3" name="orderStatus"> 
+													<label class="form-check-label" for="orderStatus-3">Đã đóng</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-group row">
+											<label for="zzz" class="col-sm-2 col-form-label">Phương thức:</label>
+											<div class="col-sm-8 pt-2">
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="0" id="payType0" name="payType"> 
+													<label class="form-check-label" for="payType0">Không</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="1" id="payType1" name="payType"> 
+													<label class="form-check-label" for="payType1">ATM</label>
+												</div>
+												<div class="d-inline-block">
+													<input type="radio" class="form-check-input" value="2" id="payType2" name="payType"> 
+													<label class="form-check-label" for="payType2">COD</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="formButton">
+									<button id="btn-reset" type="reset" class="btn btn-secondary mr-2">
+										<i class="fa fa-eraser"></i>&nbsp; Làm mới
+									</button>
+									<button id="btn-search" type="button" class="btn btn-primary">
+										<i class="fa fa-search"></i>&nbsp; Tìm kiếm
+									</button>
+								</div>
+							</form>
+						</div>
+						<!-- /.card-body -->
+					</div>
+            </div><!-- /.container-fluid -->
+
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Quản lý đơn đặt hàng</h3>
+                    </div> <!-- /.card-body -->
+                    <div class="card-body">
+                        <div class="grid-btn">
+                            <button class="btn btn-info" onclick="orderEdit()"><i
+                                    class="fa fa-pencil-square-o"></i>&nbsp;Sửa
+                            </button>
+                            <button class="btn btn-warning" onclick="changeOrderStatus(5)"><i
+                                    class="fa fa-truck"></i>&nbsp;Bắt đầu giao hàng
+                            </button>
+                            <button class="btn btn-success" onclick="changeOrderStatus(2)"><i
+                                    class="fa fa-truck"></i>&nbsp;Hoàn tất giao hàng
+                            </button>
+                            <button class="btn btn-dark" onclick="changeOrderStatus(3)"><i
+                                    class="fa fa-truck"></i>&nbsp;Hết hàng
+                            </button>
+                            <button class="btn btn-danger" onclick="changeOrderStatus(-3)"><i
+                                    class="fa fa-trash-o"></i>&nbsp;Đóng đơn hàng
+                            </button>
+                        </div>
+                        <table id="jqGrid" class="table table-bordered">
+                        </table>
+                        <div id="jqGridPager"></div>
+                    </div><!-- /.card-body -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+
+		<div id="orderInfoModal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Sửa thông tin</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="##">
+                           <div class="form-group">
+                               <div class="alert alert-danger" id="edit-error-msg" style="display: none;">
+                                   Lỗi
+                               </div>
+                           </div>
+                           <input type="hidden" id="orderId">
+                           <div class="form-group">
+                               <label for="totalPrice" class="control-label">Giá đặt hàng:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                               <input type="number" class="form-control" id="totalPrice" name="totalPrice"
+                                      placeholder="Nhập số tiền thay đổi giá đặt hàng" required="true">
+                           </div>
+                           <div class="form-group">
+                               <label for="userAddress"
+                                      class="control-label">Địa chỉ người nhận:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                               <input type="text" class="form-control" id="userAddress" name="userAddress"
+                                      placeholder="Nhập thông tin người nhận" value="##">
+                           </div>
+                       </form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="saveButton">Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="orderItemModal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Thông tin đặt hàng</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<label id="orderItemString" class="control-label"></label>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Quay lại</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div id="expressInfoModal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Thông tin người nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+							Số ĐT: 
+							<span id="userPhoneInfo" style="font-weight: 600;"></span>
+						</div>
+						<div>
+							Địa chỉ: 
+							<span id="userAddressInfo" style="font-weight: 600;"></span>
+						</div>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Quay lại</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+    <!-- /.content-wrapper -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- jqgrid -->
+<script th:src="@{/admin/plugins/jqgrid-5.5.2/jquery.jqGrid.min.js}"></script>
+<script th:src="@{/admin/plugins/jqgrid-5.5.2/grid.locale-cn.js}"></script>
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/dist/js/order.js}"></script>
+</body>
+</html>

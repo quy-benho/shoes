@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" th:href="@{Appdata/css/common.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/login.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/header.css}">
+    <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+</head>
+<body>
+<div class="top center">
+    <div class="logo center">
+        <a th:href="@{/index}"><img src="Appdata/image/logo-thu-dang.png" alt=""></a>
+    </div>
+</div>
+<div class="form">
+    <div class="login">
+        <div class="login_center">
+            <div class="login_top">
+                <div class="left fl">Đăng nhập</div>
+                <div class="right fr">Chưa có tài khoản？<a href="register.html" target="_self">Đăng ký</a></div>
+                <div class="clear"></div>
+                <div class="under-line center"></div>
+            </div>
+            <form id="loginForm" onsubmit="return false;" action="##">
+                <div class="login_main center">
+                    <div class="login-info">
+                        <label for="loginName">Số điện thoại</label>
+                        <input class="login-info-input" type="text" name="loginName"
+                                                             id="loginName"
+                                                             placeholder="Nhập số điện thoại của bạn"/>
+                    </div>
+                    <div class="login-info">
+                        <label for="password">Mật khẩu</label>
+                        <input class="login-info-input"
+                                                     id="password"
+                                                        type="password"
+                                                        name="password"
+                                                       placeholder="Nhập mật khẩu của bạn"/></div>
+                    <div class="login-info">
+                        Capcha:&nbsp;
+                        <input class="login-info-input verify-code" type="text" name="verifyCode"
+                               placeholder="Nhập mã capcha" id="verifyCode"/>
+                        <img alt="Mã captra" style="top: 16px;position: relative;" th:src="@{/common/kaptcha}"
+                             onclick="this.src='/common/kaptcha?d='+new Date()*1">
+                    </div>
+                </div>
+                <div class="login_submit">
+                    <input class="submit" type="submit" onclick="login()" value="Đăng nhập">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+    function login() {
+        var loginName = $("#loginName").val();
+        if (!validPhoneNumber(loginName)) {
+            swal('Số điện thoại không đúng', {
+                icon: "error",
+            });
+            return false;
+        }
+        var password = $("#password").val();
+        if (!validPassword(password)) {
+            swal('Mật khẩu phải dài từ 6-20 kí tự', {
+                icon: "error",
+            });
+            return false;
+        }
+        var verifyCode = $("#verifyCode").val();
+        if (!validLength(verifyCode, 5)) {
+            swal('Mã xác nhận không đúng', {
+                icon: "error",
+            });
+            return false;
+        }
+        var params = $("#loginForm").serialize();
+        var url = '/login';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: params,
+            success: function (result) {
+                if (result.resultCode == 200) {
+                	let goodsId = localStorage.getItem("goodsId");
+                	if (goodsId) {
+                		localStorage.removeItem("goodsId");
+                		window.location.href = `/goods/detail/${goodsId}`;
+                	} else {
+                		window.location.href = '/index';
+                	}
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("Lỗi hệ thống", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head-fragment(title,path)">
+    <meta charset="UTF-8">
+    <title>Thu Dang Store</title>
+    <link rel="stylesheet" th:href="@{/Appdata/css/swiper-bundle.min.css}">
+    <link rel="stylesheet" th:href="@{/Appdata/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/Appdata/css/common.css}">
+    <link rel="stylesheet" th:href="@{/Appdata/styles/header.css}">
+    <link rel="stylesheet" th:href="@{'/Appdata/styles/'+${path}+'.css'}">
+    <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<nav id="nav" th:fragment="nav-fragment">
+    <div class="banner_x center">
+        <div class="mainmenu">
+            <a th:href="@{/index}"><h1>Thu Dang Store</h1></a>
+            <div class="fr">
+                <div class="search">
+                    <input class="text" type="text" id="keyword" autocomplete="off">
+                    <div class="search_hot">
+                    </div>
+                </div>
+                <div class="button iconfont icon-search" onclick="search()"></div>
+            </div>
+
+        </div>
+    </div>
+</nav>
+<header id="header" th:fragment="header-fragment">
+    <div class="center">
+        <ul class="fl">
+            <li><a th:href="@{/index}">Trang chủ</a></li>
+            <li><a th:href="@{/listing?orderBy=new}">Giày</a></li>
+            <li><a th:href="@{/admin}">Admin</a></li>
+            <li><a href="https://edu.csdn.net/course/detail/26258">Tin tức</a></li>
+            <li><a href="https://juejin.im/book/5da2f9d4f265da5b81794d48?referrer=59199e22a22b9d0058279886">Liên hệ</a></li>
+
+        </ul>
+        <div class="fr">
+            <th:block th:unless="${session.User==null}">
+                <div class="user">
+                    <ul class="selector">
+                        <li>
+                            <a th:href="@{/personal}">
+                                Tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/orders}">
+                                Đơn hàng
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                    <a href="##" class="username">
+                        <th:block th:text="${session.User.nickName}"></th:block>
+                        <i class="iconfont icon-down"></i>
+                    </a>
+                </div>
+                <div class="shopcart">
+                    <a th:href="@{/shop-cart}" style="color: white;"><i class="iconfont icon-cart"></i>
+                        Giỏ hàng(
+                        <th:block th:text="${session.User.shopCartItemCount}"></th:block>
+                        )</a>
+                </div>
+            </th:block>
+            <th:block th:if="${session.User==null}">
+                <ul class="login">
+                    <li><a th:href="@{/login}">Đăng nhập</a></li>
+                    <li><a th:href="@{/register}">Đăng ký</a></li>
+                </ul>
+                <div class="shopcart">
+                    <a th:href="@{/login}" style="color: white;"><i class="iconfont icon-cart"></i>
+                        Giỏ hàng(0)</a>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</header>
+</html>

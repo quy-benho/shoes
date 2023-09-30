@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','order-detail')">
+</head>
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+<!-- nav -->
+<nav th:replace="pages/header::nav-fragment"></nav>
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+        <!-- sidebar -->
+        <div th:replace="pages/personal-sidebar::sidebar-fragment"></div>
+        <div class="intro fr">
+            <div class="uc-box uc-main-box">
+                <div class="uc-content-box order-view-box">
+                    <div class="box-hd">
+                        <h1 class="title">Chi tiết đơn hàng
+
+                        </h1>
+                        <div class="more clearfix">
+                            <h2 class="subtitle">Mã đơn：
+                                <th:block th:text="${orderDetailVO.orderNo}"></th:block>
+                                <span class="tag tag-subsidy"></span>
+                            </h2>
+                            <div class="actions">
+                                <input type="hidden" id="orderNoValue" th:value="${orderDetailVO.orderNo}">
+                                <th:block th:if="${orderDetailVO.orderStatus==1 or orderDetailVO.orderStatus==4}">
+                                    <a onclick="cancelOrder()"
+                                       class="btn btn-small btn-info" title="Hủy đơn hàng">Hủy đơn hàng</a>
+                                </th:block>
+                                <th:block th:if="${orderDetailVO.orderStatus==0}">
+                                    <a onclick="payOrder()"
+                                       class="btn btn-small btn-primary" title="Thanh toán">Thanh toán</a>
+                                </th:block>
+<!--                                 <th:block th:if="${orderDetailVO.orderStatus==3}"> -->
+<!--                                     <a onclick="finishOrder()" -->
+<!--                                        class="btn btn-small btn-primary" title="Xác nhận">Xác nhận</a> -->
+<!--                                 </th:block> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <div class="uc-order-item uc-order-item-pay">
+                            <div class="order-detail">
+
+                                <div class="order-summary">
+                                    <div class="order-status" th:text="${orderDetailVO.orderStatusString}" style="font-size: 120%;"></div>
+                                    <div class="order-desc">
+                                        <th:block th:if="${orderDetailVO.orderStatus==0}">Vui lòng hoàn tất thanh toán càng sớm càng tốt</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==1}">Xác nhận đặt hàng tại Thu Dang Store</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==2}">Cảm ơn bạn đã tin tưởng Thu Dang Store</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==3}">Sản phẩm bạn đặt đã hết, hàng đang về. Vui lòng chờ nhé !</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==4}">Vui lòng chờ giao hàng</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==5}">Sản phẩm đang được giao đến cho bạn</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus<0}">Giao dịch đã đóng</th:block>
+                                    </div>
+                                    <th:block th:if="${orderDetailVO.orderStatus>=0}">
+                                        <div class="order-progress">
+                                            <ol class="progress-list clearfix progress-list-5">
+                                                <th:block th:if="${orderDetailVO.orderStatus==0}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>0}">
+                                                    <li class="step step-first">
+                                                </th:block>
+	                                                <div class="progress"><span class="text">Đặt hàng</span></div>
+	                                                <div class="info" th:text="${#dates.format(orderDetailVO.createTime, 'yyyy-MM-dd HH:mm:ss')}">
+	                                                    02月07日
+	                                                </div>
+                                                </li>
+                                                
+                                                <th:block th:if="${orderDetailVO.orderStatus<1}">
+                                                    <li class="step">
+                                                </th:block>
+<!--                                                 <th:block th:if="${orderDetailVO.orderStatus==1}"> -->
+<!--                                                     <li class="step step-active"> -->
+<!--                                                 </th:block> -->
+                                                <th:block th:if="${orderDetailVO.orderStatus==1 || orderDetailVO.orderStatus>=2}">
+                                                    <li class="step step-done">
+                                                </th:block>
+	                                                <div class="progress"><span class="text">Thanh toán</span></div>
+	                                                <div class="info"></div>
+                                                </li>
+                                                
+                                                <th:block th:if="${orderDetailVO.orderStatus<1}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==1}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>1}">
+                                                    <li class="step step-done">
+                                                </th:block>
+	                                                <div class="progress"><span class="text">Chờ giao hàng</span></div>
+	                                                <div class="info"></div>
+                                                </li>
+                                                
+                                                <th:block th:if="${orderDetailVO.orderStatus<2 || orderDetailVO.orderStatus==4}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==5}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus<0 || orderDetailVO.orderStatus==2 || orderDetailVO.orderStatus==3}">
+                                                    <li class="step step-done">
+                                                </th:block>
+	                                                <div class="progress"><span class="text">Đang giao hàng</span></div>
+	                                                <div class="info"></div>
+                                                </li>
+
+                                                <th:block th:if="${orderDetailVO.orderStatus==0 || orderDetailVO.orderStatus==1 || orderDetailVO.orderStatus==4 || orderDetailVO.orderStatus==5}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus<0 || orderDetailVO.orderStatus==2 || orderDetailVO.orderStatus==3}">
+                                                    <li class="step step-active">
+                                                </th:block>
+<!--                                                 <th:block th:if="${orderDetailVO.orderStatus==2}"> -->
+<!--                                                     <li class="step step-last"> -->
+<!--                                                 </th:block> -->
+	                                                <div class="progress"><span class="text">Kết quả</span></div>
+	                                                <div class="info"></div>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <table class="order-items-table">
+                                    <tbody>
+                                    <th:block th:each="item : ${orderDetailVO.OrderItemVOS}">
+                                        <tr>
+                                            <td class="col col-thumb">
+                                                <div class="figure figure-thumb">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}">
+                                                        <img th:src="@{${item.goodsCoverImg}}"
+                                                             width="80" height="80" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="col col-name">
+                                                <p class="name">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
+                                                       th:text="${item.goodsName}">newbee</a>
+                                                </p>
+                                            </td>
+                                            <td class="col col-price"><p class="price"
+                                                                         th:text="${item.formatPrice()+' x '+item.goodsCount}">
+                                                1299元 × 1</p></td>
+                                            <td class="col col-actions">
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="editAddr" class="order-detail-info">
+                                <h3>Địa chỉ</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <td th:text="${orderDetailVO.userAddress}">Thu Dang Store</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div id="editTime" class="order-detail-info">
+                                <h3>Phương thức thanh toán</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Phương thức：</th>
+                                        <td th:text="${orderDetailVO.payTypeString==null?'Thanh toán trực tuyến':orderDetailVO.payTypeString}">
+                                            Thanh toán trực tuyến
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div class="order-detail-total">
+                                <table class="total-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Đang chuyển hàng：</th>
+                                        <td><span class="num">0</span> ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="total">Tổng tiền：</th>
+                                        <td class="total"><span class="num" th:text="${orderDetailVO.formatTotalPrice()}"></span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+    function cancelOrder() {
+        var orderNo = $("#orderNoValue").val();
+        swal({
+            title: "Chú ý",
+            text: "Bạn có chắc chắn muốn hủy đơn đặt hàng?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((flag) => {
+                if (flag) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/orders/' + orderNo + '/cancel',
+                        success: function (result) {
+                            if (result.resultCode == 200) {
+                                window.location.reload();
+                            } else {
+                                swal(result.message, {
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function () {
+                            swal("Lỗi hệ thống", {
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            }
+        )
+        ;
+    }
+
+    function payOrder() {
+        var orderNo = $("#orderNoValue").val();
+        window.location.href = '/selectPayType?orderNo=' + orderNo;
+    }
+
+    function finishOrder() {
+        var orderNo = $("#orderNoValue").val();
+        $.ajax({
+            type: 'PUT',
+            url: '/orders/' + orderNo + '/finish',
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    window.location.reload();
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function () {
+                swal("Lỗi hệ thống", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

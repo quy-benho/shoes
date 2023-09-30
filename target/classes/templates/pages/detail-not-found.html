@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','detail')">
+</head>
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+
+<div id="detail">
+    <!-- nav -->
+    <nav th:replace="pages/header::nav-fragment"></nav>
+
+    <div class="dc">
+        <div class="content w">
+            <div class="title fl">Thông tin chi tiết</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="intro mt20 w clearfix">
+        
+        <h2>Sản phẩm đã dừng bán !</h2>
+        <a href="/" style="color: #19a0d2; text-decoration: underline; display: block; margin-top: 5px; font-size: 110%;">
+        	Quay lại trang chủ
+        </a>
+        <a href="/">
+        	<img alt="not found" src="/Appdata/image/product-not-found.png" title="Sản phẩm đã dừng bán !">
+        </a>
+        
+        
+        <div class="clear"></div>
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/Appdata/js/search.js}" type="text/javascript"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

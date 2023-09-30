@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adc.eshop.dao.GoodsDetailMapper">
+    <resultMap id="BaseResultMap" type="com.adc.eshop.entity.GoodsDetail">
+        <id column="goods_detail_id" jdbcType="BIGINT" property="goodsDeatailId"/>
+        <result column="goods_color" jdbcType="VARCHAR" property="goodsColor"/>
+        <result column="goods_size" jdbcType="INTEGER" property="goodsSize"/>
+        <result column="goods_quantity" jdbcType="INTEGER" property="goodsQuantity"/>
+        <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    goods_detail_id, goods_color, goods_size, goods_quantity, goods_id,is_deleted
+  </sql>
+    <select id="findGoodsDetailList" parameterType="Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_goods_detail
+        <where>
+        	is_deleted = 0
+            <if test="goodsId!=null and goodsId!=''">
+            	<bind name="goodsId_" value="'%' + goodsId + '%'" />
+                and goods_id like #{goodsId_}
+            </if>
+        </where>
+    </select>
+    <select id="getListColorById" resultType="string">
+        select goods_color 
+        from tb_goods_detail
+        WHERE goods_id=#{goodsId}
+        group by goods_color
+    </select>
+    <select id="getListSizeByColor" resultType="int">
+        select goods_size
+        from tb_goods_detail
+        WHERE goods_color=#{goodsColor}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_goods_detail
+        where goods_detail_id = #{goodsDeatailId,jdbcType=BIGINT}
+    </select>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    update tb_goods_detail set is_deleted=1
+    where goods_detail_id = #{goodsDeatailId,jdbcType=BIGINT} and is_deleted=0
+  </update>
+
+    <insert id="insert" parameterType="com.adc.eshop.entity.GoodsCategory">
+    insert into tb_goods_detail (goods_detail_id, goods_color, goods_size, goods_quantity, goods_id, is_deleted)
+    values (#{goodsDeatailId,jdbcType=BIGINT}, #{goodsColor,jdbcType=VARCHAR}, #{goodsSize,jdbcType=INTEGER},
+      #{goodsQuantity,jdbcType=INTEGER}, #{goodsId,jdbcType=BIGINT}, #{isDeleted,jdbcType=TINYINT}
+  </insert>
+    <insert id="insertSelective" parameterType="com.adc.eshop.entity.GoodsDetail">
+        insert into tb_goods_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsDeatailId != null">
+                goods_detail_id,
+            </if>
+            <if test="goodsColor != null">
+                goods_color,
+            </if>
+            <if test="goodsSize != null">
+                goods_size,
+            </if>
+            <if test="goodsQuantity != null">
+                goods_quantity,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsDeatailId != null">
+                #{goodsDeatailId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsColor != null">
+                #{goodsColor,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsSize != null">
+                #{goodsSize,jdbcType=INTEGER},
+            </if>
+            <if test="goodsQuantity != null">
+                #{goodsQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=BIGINT},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+
+
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.adc.eshop.entity.GoodsDetail">
+        update tb_goods_detail
+        <set>
+            <if test="goodsColor != null">
+                goods_color = #{goodsColor},
+            </if>
+            <if test="goodsSize != null">
+                goods_size = #{goodsSize},
+            </if>
+            <if test="goodsQuantity != null">
+                goods_quantity = #{goodsQuantity},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+
+        </set>
+        where goods_detail_id = #{goodsDeatailId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.adc.eshop.entity.GoodsCategory">
+    update tb_goods_detail
+    set goods_color = #{goodsColor,jdbcType=VARCHAR},
+      goods_size = #{goodsSize,jdbcType=INTEGER},
+      goods_quantity = #{goodsQuantity,jdbcType=INTEGER},
+      goods_id = #{updateTime,jdbcType=BIGINT},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
+    where goods_detail_id = #{goodsDeatailId,jdbcType=BIGINT}
+  </update>
+    <select id="getTotalGoodsCategories" parameterType="Map" resultType="int">
+        select count(*) from tb_goods_detail
+        where is_deleted = 0
+    </select>
+</mapper>

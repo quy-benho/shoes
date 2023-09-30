@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/main/resources/templates/admin=UTF-8
+encoding//src/main/resources/templates/admin/carousel.html=UTF-8
+encoding//src/main/resources/templates/admin/category.html=UTF-8
+encoding//src/main/resources/templates/admin/goods.html=UTF-8
+encoding//src/main/resources/templates/admin/goods_edit.html=UTF-8
+encoding//src/main/resources/templates/admin/index.html=UTF-8
+encoding//src/main/resources/templates/admin/index_config.html=UTF-8
+encoding//src/main/resources/templates/admin/order.html=UTF-8
+encoding//src/main/resources/templates/admin/profile.html=UTF-8
+encoding//src/main/resources/templates/admin/sidebar.html=UTF-8
+encoding//src/main/resources/templates/admin/user.html=UTF-8
+encoding//src/main/resources/templates/pages/index.html=UTF-8
+encoding/<project>=UTF-8

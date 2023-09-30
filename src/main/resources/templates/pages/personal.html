@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','personal')">
+</head>
+<link th:href="@{/Appdata/css/bootstrap-modal.css}" rel="stylesheet">
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+<!-- nav -->
+<nav th:replace="pages/header::nav-fragment"></nav>
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="pages/personal-sidebar::sidebar-fragment"></div>
+
+        <div class="intro fr">
+            <div class="grzlbt ml40">Thông tin của tôi <a href="javascript:openUpdateModal();"
+                                             style="color:#1baeae;margin-left: 500px;">Thay đổi thông tin</a>
+            </div>
+            <div class="info_item ml40"><span>Họ tên</span><span
+                    th:text="${session.User.nickName}">Thu Dang Store</span>
+            </div>
+            <div class="info_item ml40"><span>SDT</span><span
+                    th:text="${session.User.loginName}">Thu Dang Store</span>
+            </div>
+            <div class="info_item ml40"><span>Mật khẩu</span><span>******</span>
+            </div>
+            <div class="info_item ml40"><span>Chữ ký</span><span
+                    th:text="${session.User.introduceSign==''?'Không':session.User.introduceSign}">Thu Dang Store</span>
+            </div>
+            <div class="info_item ml40"><span>Dia chi</span><span
+                    th:text="${session.User.address==''?'Không':session.User.address}">Thu Dang Store</span></span>
+            </div>
+
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="content">
+        <div class="modal fade" id="personalInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="personalInfoModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h6 class="modal-title" id="personalInfoModalLabel">Sửa đổi thông tin cá nhân</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id="personalInfoForm">
+                            <div class="form-group">
+                                <label for="nickName" class="control-label">Họ tên:</label>
+                                <input type="hidden" id="userId" th:value="${session.User.userId}">
+                                <input type="text" class="form-control" id="nickName" name="nickName"
+                                       placeholder="Hãy nhập một nickname" th:value="${session.User.nickName}"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="introduceSign" class="control-label">Chữ kí:</label>
+                                <input type="text" class="form-control" id="introduceSign" name="introduceSign"
+                                       placeholder="Vui lòng nhập chữ kí của bạn" th:value="${session.User.introduceSign}"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="control-label">Thông tin giao hàng:</label>
+                                <input type="text" class="form-control" id="address" name="address"
+                                       placeholder="Vui lòng nhập địa chỉ nhận hàng" th:value="${session.User.address}"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="introduceSign" class="control-label">Nhập mật khẩu hiện tại</label>
+                                <input type="text" class="form-control" id="password" name="password"
+                                       placeholder="Vui lòng nhập mật khẩu hiện tại" th:value="${session.User.password}"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="introduceSign" class="control-label">Nhập mật mới</label>
+                                <input type="text" class="form-control" id="newPassword" name="newPassword"
+                                       placeholder="Vui lòng nhập mật khẩu mới" th:value="${session.User.newPassword}"
+                                       required="true">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy bờ</button>
+                        <button type="button" class="btn btn-primary" id="saveButton">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+    </div>
+</div>
+
+<div th:replace="pages/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/Appdata/js/bootstrap3.js}"></script>
+<script th:src="@{/Appdata/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+    function openUpdateModal() {
+        $('#personalInfoModal').modal('show');
+    }
+
+    $('#saveButton').click(function () {
+        var address = $("#address").val();
+        if (address.trim().length < 5) {
+            swal("Địa chỉ tối thiểu 5 kí tự", {
+                icon: "error",
+            });
+            return;
+        }
+        var introduceSign = $("#introduceSign").val();
+        if (introduceSign.trim().length < 5) {
+            swal("Chữ ký tối thiểu 5 kí tự", {
+                icon: "error",
+            });
+            return;
+        }
+        var password = $("#password").val();
+        var newPasswod = $("#newPassword").val();
+        if (password.trim().length > 0 && newPasswod.trim().length == 0) {
+            swal("Vui lòng mật khẩu mới", {
+                icon: "error",
+            });
+            return;
+        }
+        var nickName = $("#nickName").val();
+        if (nickName.trim().length < 3) {
+            swal("Vui lòng nhập họ tên chính xác", {
+                icon: "error",
+            });
+            return;
+        }
+        var userId = $("#userId").val();
+        var data = {
+            "userId": userId,
+            "address": address,
+            "introduceSign": introduceSign,
+            "nickName": nickName,
+            "password": password,
+            "newPassword": newPasswod
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/personal/updateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $('#personalInfoModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    $('#personalInfoModal').modal('hide');
+                    alert(result.message);
+                }
+                ;
+            },
+            error: function () {
+                alert('Cập nhật không thành công!');
+            }
+        });
+    });
+</script>
+</body>
+</html>

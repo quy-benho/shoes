@@ -1,0 +1,196 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thu Dang Store</title>
+    <link rel="stylesheet" th:href="@{Appdata/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{Appdata/css/common.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/header.css}">
+    <link rel="stylesheet" th:href="@{Appdata/styles/cart.css}">
+    <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+</head>
+<body>
+
+<div id="cart">
+    <div class="banner_x center">
+        <a th:href="@{/index}">
+            <div class="logo fl">
+                <img src="Appdata/image/logo-thu-dang.png"/>
+            </div>
+        </a>
+
+        <div class="wdgwc fl ml20">Giỏ hàng</div>
+        <div class="wxts fl ml20"></div>
+        <div class="clear"></div>
+    </div>
+    <div class="cart_line"></div>
+    <div class="cart_bg">
+        <th:block th:if="${#lists.isEmpty(myShoppingCartItems)}">
+            <div class="list center">
+                <img style="position: absolute;margin-top: 16px;left: 45%;" th:src="@{/Appdata/image/null-content.png}">
+            </div>
+        </th:block>
+        <th:block th:unless="${#lists.isEmpty(myShoppingCartItems)}">
+            <div class="list center">
+                <div class="top2 center">
+                    <div class="sub_top fl">
+                        Ảnh sản phẩm
+                    </div>
+                    <div class="sub_top fl">Tên sản phẩm</div>
+                    <div class="sub_top fl">Màu sắc</div>
+                    <div class="sub_top fl">Size</div>
+                    <div class="sub_top fl">Đơn giá</div>
+                    <div class="sub_top fl">Số lượng</div>
+                    <div class="sub_top fl">Tổng</div>
+                    <div class="sub_top fl">Thao tác</div>
+                    <div class="clear"></div>
+                </div>
+                <th:block th:each="item : ${myShoppingCartItems}">
+                    <div class="content2 center">
+                        <div class="sub_content fl ">
+                        </div>
+                        <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImg}}"></div>
+                        <div class="sub_content fl ft" th:text="${item.goodsName}">Tên sản phẩm</div>
+                        <div class="sub_content fl ft" th:text="${item.goodsColor}">Red</div>
+                        <div class="sub_content fl ft" th:text="${item.goodsSize}">38</div>
+                        <div class="sub_content fl" th:text="${item.formatPrice()}">1299VNĐ</div>
+                        <div class="sub_content fl">
+                            <input class="goods_count" th:id="${'goodsCount'+item.cartItemId}" type="number"
+                                   th:onblur="'updateItem('+${item.cartItemId}+')'"
+                                   th:value="${item.goodsCount}" step="1" min="1"
+                                   max="5">
+                        </div>
+                        <div class="sub_content fl" th:text="${item.formatPrice(item.goodsCount*item.sellingPrice)}">1299VNĐ</div>
+                        <div class="sub_content fl">
+                            <a href="#" th:onclick="'deleteItem('+${item.cartItemId}+')'">X</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </th:block>
+            </div>
+        </th:block>
+        <div class="pre_order mt20 center">
+            <div class="tips fl ml20">
+                <ul>
+                    <li><a th:href="@{/index}">Tiếp tục mua hàng</a></li>
+                    <li>|</li>
+                    <li>Tổng<span th:text="${itemsTotal}">13</span>Mặt hàng</li>
+                    <div class="clear"></div>
+                </ul>
+            </div>
+            <div class="order_div fr">
+                <div class="order_total fl">Tổng：<span th:text="${priceTotal}">1299 VNĐ</span></div>
+                <div class="order_button fr">
+                    <th:block th:if="${itemsTotal == 0}">
+                        <input class="order_button_c" type="button" name="tip"
+                               onclick="tip()"
+                               value="Thanh toán"/>
+                    </th:block>
+                    <th:block th:unless="${itemsTotal == 0}">
+                        <input class="order_button_d" type="button" name="settle"
+                               onclick="settle()"
+                                   value="Thanh toán"/>
+                    </th:block>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="pages/footer::footer-fragment"></div>
+
+</body>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+
+    function tip() {
+        swal("Không có dữ liệu trong giỏ hàng", {
+            icon: "error",
+        });
+    }
+
+
+    function settle() {
+        window.location.href = '/shop-cart/settle'
+    }
+
+
+    function updateItem(id) {
+        var domId = 'goodsCount' + id;
+        var goodsCount = $("#" + domId).val();
+        if (goodsCount > 5) {
+            swal("Một sản phẩm chỉ mua tối ta được 5 sản phẩm", {
+                icon: "error",
+            });
+            return;
+        }
+        if (goodsCount < 1) {
+            swal("Rỗng", {
+                icon: "error",
+            });
+            return;
+        }
+        var data = {
+            "cartItemId": id,
+            "goodsCount": goodsCount
+        };
+        $.ajax({
+            type: 'PUT',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    window.location.reload();
+                } else {
+                    swal("Lỗi hệ thống", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function () {
+                swal("Lỗi hệ thống", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+    function deleteItem(id) {
+        swal({
+            title: "Xác nhận",
+            text: "Bạn chắc chắn có muốn xóa không?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((flag) => {
+                if (flag) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/shop-cart/' + id,
+                        success: function (result) {
+                            if (result.resultCode == 200) {
+                                window.location.reload();
+                            } else {
+                                swal("Lỗi hệ thống", {
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function () {
+                            swal("Lỗi hệ thống", {
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            }
+        )
+        ;
+    }
+</script>
+</html>

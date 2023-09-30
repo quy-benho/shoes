@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="pages/header::head-fragment('Thu Dang Store','order-detail')">
+</head>
+<link th:href="@{/Appdata/css/bootstrap-modal.css}" rel="stylesheet">
+<body>
+<header th:replace="pages/header::header-fragment"></header>
+<!-- nav -->
+<nav th:replace="pages/header::nav-fragment"></nav>
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="pages/personal-sidebar::sidebar-fragment"></div>
+
+        <div class="intro fr">
+            <div class="uc-box uc-main-box">
+                <div class="uc-content-box order-view-box">
+                    <div class="box-hd">
+                        <h1 class="title">Điền và kiểm tra thông tin đặt hàng</h1>
+                        <div class="more clearfix">
+                            <div class="actions">
+                                <a id="saveOrder" class="btn btn-small btn-primary" title="Gửi đơn đặt hàng">Gửi đơn đặt hàng</a>
+                            </div>
+                            <div class="actions">
+                                <a href="/shop-cart" class="btn btn-small btn-secondary" style="margin-right: 5px;" title="Hủy bỏ">Hủy bỏ</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <div class="uc-order-item uc-order-item-pay">
+                            <div class="order-detail">
+
+                                <div class="order-summary">
+                                    <div class="order-progress">
+                                        <ol class="progress-list clearfix progress-list-5">
+                                            <li class="step step-done">
+                                                <div class="progress"><span class="text">Giỏ hàng</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step step-active">
+                                                <div class="progress"><span class="text">Đặt hàng</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">Thanh toán</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">Hết hàng</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">Giao dịch thành công</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <table class="order-items-table">
+                                    <tbody>
+
+                                    <th:block th:each="item : ${myShoppingCartItems}">
+                                        <tr>
+                                            <td class="col col-thumb">
+                                                <div class="figure figure-thumb">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}">
+                                                        <img th:src="@{${item.goodsCoverImg}}"
+                                                             width="80" height="80" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="col col-name">
+                                                <p class="name">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
+                                                       th:text="${item.goodsName}">Thu Dang Store</a>
+                                                </p>
+                                            </td>
+                                            <td class="col col-price"><p class="price"
+                                                                         th:text="${item.formatPrice()+' x '+item.goodsCount}">
+                                                1299 VNĐ × 1</p></td>
+                                            <td class="col col-actions">
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="editAddr" class="order-detail-info">
+                                <h3>Thông tin giao hàng</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Địa chỉ：</th>
+                                        <td class="user_address_label"
+                                            th:text="${session.User.address==''?'Không':session.User.address}">
+                                            newbee
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                    <a class="btn btn-small btn-line-gray J_editAddr"
+                                       href="javascript:openUpdateModal();">Sửa</a>
+                                </div>
+                            </div>
+                            <div id="editTime" class="order-detail-info">
+                                <h3>Phương thức thanh toán</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Phương thức：</th>
+                                        <td>Thanh toán trực tuyến</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div class="order-detail-total">
+                                <table class="total-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Tổng tiền：</th>
+                                        <td><span class="num" th:text="${priceTotal+''}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Đang chuyển：</th>
+                                        <td><span class="num">0</span> ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="total">Tổng tiền phải trả：</th>
+                                        <td class="total"><span class="num" th:text="${priceTotal+''}"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="personalInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="personalInfoModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h6 class="modal-title" id="personalInfoModalLabel">Sửa địa chỉ</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id="personalInfoForm">
+                            <div class="form-group">
+                                <input type="hidden" id="userId" th:value="${session.User.userId}">
+                                <label for="address" class="control-label">Địa chỉ giao hàng:</label>
+                                <input type="text" class="form-control" id="address" name="address"
+                                       placeholder="Vui lòng nhập địa chỉ giao hàng" th:value="${session.User.address}"
+                                       required="true">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy bỏ</button>
+                        <button type="button" class="btn btn-primary" id="saveButton">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+
+<div th:replace="pages/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/Appdata/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/Appdata/js/bootstrap3.js}"></script>
+<script type="text/javascript">
+    $('#saveOrder').click(function () {
+        var userAddress = $(".user_address_label").html();
+        if (userAddress == '' ) {
+            swal("Vui lòng điền thông tin nhận", {
+                icon: "error",
+            });
+            return;
+        }
+        if (userAddress.trim().length < 10) {
+            swal("Vui lòng xác nhận thông tin chính xác", {
+                icon: "error",
+            });
+            return;
+        }
+        window.location.href = '../saveOrder';
+    });
+
+    function openUpdateModal() {
+        $('#personalInfoModal').modal('show');
+    }
+
+    $('#saveButton').click(function () {
+        var address = $("#address").val();
+        var userId = $("#userId").val();
+        var data = {
+            "userId": userId,
+            "address": address
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/personal/updateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $('#personalInfoModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    $('#personalInfoModal').modal('hide');
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal('Lỗi hệ thống', {
+                    icon: "error",
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

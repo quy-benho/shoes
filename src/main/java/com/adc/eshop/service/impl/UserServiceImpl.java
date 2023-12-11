@@ -1,6 +1,7 @@
 
 package com.adc.eshop.service.impl;
 
+import com.adc.eshop.dao.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
 
     @Override
     public PageResult getUsersPage(PageQueryUtil pageUtil) {
@@ -53,10 +55,10 @@ public class UserServiceImpl implements UserService {
             if (user.getLockedFlag() == 1) {
                 return ServiceResultEnum.LOGIN_USER_LOCKED.getResult();
             }
-//            if (user.getNickName() != null && user.getNickName().length() > 7) {
-//                String tempNickName = user.getNickName().substring(0, 7) + "..";
-//                user.setNickName(tempNickName);
-//            }
+            if (user.getNickName() != null && user.getNickName().length() > 7) {
+                String tempNickName = user.getNickName().substring(0, 7) + "..";
+                user.setNickName(tempNickName);
+            }
             UserVO userVO = new UserVO();
             BeanUtil.copyProperties(user, userVO);
 

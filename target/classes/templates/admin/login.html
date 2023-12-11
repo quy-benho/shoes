@@ -42,7 +42,7 @@
             	<img th:src="@{/Appdata/image/person-icon.png}" style="height: 100px;margin:0 auto;">        
             </div>
             <br>
-            <p class="login-box-msg">Hệ thống quản lý Shoes Store</p>
+            <p class="login-box-msg">Kênh Người Bán</p>
             <form th:action="@{/admin/login}" method="post">
                 <div th:if="${not #strings.isEmpty(session.errorMsg)}" class="form-group">
                     <div class="alert alert-danger" th:text="${session.errorMsg}"></div>

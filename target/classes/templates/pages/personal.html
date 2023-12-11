@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dang Store','personal')">
+<head th:replace="pages/header::head-fragment('Quy Shoes','personal')">
 </head>
 <link th:href="@{/Appdata/css/bootstrap-modal.css}" rel="stylesheet">
 <body>
@@ -20,18 +20,18 @@
                                              style="color:#1baeae;margin-left: 500px;">Thay đổi thông tin</a>
             </div>
             <div class="info_item ml40"><span>Họ tên</span><span
-                    th:text="${session.User.nickName}">Thu Dang Store</span>
+                    th:text="${session.User.nickName}">Quy's Shoes</span>
             </div>
             <div class="info_item ml40"><span>SDT</span><span
-                    th:text="${session.User.loginName}">Thu Dang Store</span>
+                    th:text="${session.User.loginName}">Quy's Shoes</span>
             </div>
             <div class="info_item ml40"><span>Mật khẩu</span><span>******</span>
             </div>
             <div class="info_item ml40"><span>Chữ ký</span><span
-                    th:text="${session.User.introduceSign==''?'Không':session.User.introduceSign}">Thu Dang Store</span>
+                    th:text="${session.User.introduceSign==''?'Không':session.User.introduceSign}">Quy's Shoes</span>
             </div>
             <div class="info_item ml40"><span>Dia chi</span><span
-                    th:text="${session.User.address==''?'Không':session.User.address}">Thu Dang Store</span></span>
+                    th:text="${session.User.address==''?'Không':session.User.address}">Quy's Shoes</span></span>
             </div>
 
         </div>

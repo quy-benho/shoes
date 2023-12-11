@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dang Store','search')">
+<head th:replace="pages/header::head-fragment('Quy Shoes','search')">
 </head>
 <body>
 <header th:replace="pages/header::header-fragment"></header>
@@ -18,7 +18,7 @@
                     <div>
                         <th:block th:each="thirdLevelCategory : ${searchPageCategoryVO.thirdLevelCategoryList}">
                             <a th:href="@{${'/search?goodsCategoryId='+thirdLevelCategory.categoryId}}"
-                               th:text="${thirdLevelCategory.categoryName}">Thu Dang Store</a>
+                               th:text="${thirdLevelCategory.categoryName}">Quy's Shoes</a>
                         </th:block>
                     </div>
                 </div>

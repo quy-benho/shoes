@@ -2,6 +2,7 @@ package com.adc.eshop.config;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -10,82 +11,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
 public class VNPayConfig {
 
-    public static String vnp_PayUrl = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "http://localhost:28088/paySuccessVNPAY";
-    public static String vnp_TmnCode = "HA31BWOD";
-    public static String vnp_HashSecret = "CBUZQSUGYFBIMVTYXPCCHQNDQLFGSNXZ";
+    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_TmnCode = "F1THEFG4";
+    public static String vnp_HashSecret = "MIAHSBHAOJMYFGYUETLQCESESMPXBEJV";
     public static String vnp_apiUrl = "http://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
     public static String vnp_demo = "https://sandbox.vnpayment.vn/apis/vnpay-demo/";
     public static String vnp_cn = "9704198526191432198";
-
-    public static String md5(String message) {
-        String digest = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hash = md.digest(message.getBytes("UTF-8"));
-            // converting byte array to Hexadecimal String
-            StringBuilder sb = new StringBuilder(2 * hash.length);
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b & 0xff));
-            }
-            digest = sb.toString();
-        } catch (UnsupportedEncodingException ex) {
-            digest = "";
-        } catch (NoSuchAlgorithmException ex) {
-            digest = "";
-        }
-        return digest;
-    }
-
-    public static String Sha256(String message) {
-        String digest = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(message.getBytes("UTF-8"));
-
-            // converting byte array to Hexadecimal String
-            StringBuilder sb = new StringBuilder(2 * hash.length);
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b & 0xff));
-            }
-
-            digest = sb.toString();
-
-        } catch (UnsupportedEncodingException ex) {
-            digest = "";
-        } catch (NoSuchAlgorithmException ex) {
-            digest = "";
-        }
-        return digest;
-    }
-
-    //Util for VNPAY
-    public static String hashAllFields(Map<String, String> fields) throws UnsupportedEncodingException {
-        // create a list and sort it
-        List<String> fieldNames = new ArrayList<String>(fields.keySet());
-        Collections.sort(fieldNames);
-        // create a buffer for the md5 input and add the secure secret first
-        StringBuilder sb = new StringBuilder();
-        sb.append(vnp_HashSecret);
-        Iterator<String> itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName);
-                sb.append("=");
-                sb.append(URLDecoder.decode(fieldValue,"UTF-8"));
-            }
-            if (itr.hasNext()) {
-                sb.append("&");
-            }
-        }
-        return Sha256(sb.toString());
-    }
 
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;
@@ -108,5 +46,27 @@ public class VNPayConfig {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+    public static String hmacSHA512(final String key, final String data) {
+        try {
+
+            if (key == null || data == null) {
+                throw new NullPointerException();
+            }
+            final Mac hmac512 = Mac.getInstance("HmacSHA512");
+            byte[] hmacKeyBytes = key.getBytes();
+            final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
+            hmac512.init(secretKey);
+            byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
+            byte[] result = hmac512.doFinal(dataBytes);
+            StringBuilder sb = new StringBuilder(2 * result.length);
+            for (byte b : result) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            return sb.toString();
+
+        } catch (Exception ex) {
+            return "";
+        }
     }
 }

@@ -1,6 +1,8 @@
 
 package com.adc.eshop.controller.mall;
 
+import com.adc.eshop.dao.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,8 @@ public class PersonalMallController {
 
     @Resource
     private UserService userService;
+
+
 
     @GetMapping("/personal")
     public String personalPage(HttpServletRequest request,
@@ -65,17 +69,18 @@ public class PersonalMallController {
             return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_PASSWORD_NULL.getResult());
         }
 
-        if (StringUtils.isEmpty(verifyCode)) {
-            return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_VERIFY_CODE_NULL.getResult());
-        }
+//        if (StringUtils.isEmpty(verifyCode)) {
+//            return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_VERIFY_CODE_NULL.getResult());
+//        }
 
-        String kaptchaCode = session.getAttribute("verifyCode") + "";
-        if (StringUtils.isEmpty(kaptchaCode) || !verifyCode.equals(kaptchaCode)) {
-            return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_VERIFY_CODE_ERROR.getResult());
-        }
+//        String kaptchaCode = session.getAttribute("verifyCode") + "";
+//        if (StringUtils.isEmpty(kaptchaCode) || !verifyCode.equals(kaptchaCode)) {
+//            return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_VERIFY_CODE_ERROR.getResult());
+//        }
         
         String loginResult = userService.login(loginName, MD5Util.MD5Encode(password, "UTF-8"), session);
-        
+//        String loginResult = userService.login(loginName, password, session);
+
         if (ServiceResultEnum.SUCCESS.getResult().equals(loginResult)) {
             return ResultGenerator.genSuccessResult();
         }

@@ -30,13 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class OrderMallController {
@@ -164,7 +158,7 @@ public class OrderMallController {
 
     public String checkoutVNPAY(Order order, HttpServletRequest request) {
     	Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", "2.0.0");
+        vnp_Params.put("vnp_Version", "2.1.0");
         vnp_Params.put("vnp_Command", "pay");
         vnp_Params.put("vnp_TmnCode", VNPayConfig.vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(order.getTotalPrice()*100));
@@ -176,25 +170,35 @@ public class OrderMallController {
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", VNPayConfig.getIpAddress(request));
-        vnp_Params.put("vnp_CreateDate", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 
-        List<String> fieldNames = new ArrayList<String>(vnp_Params.keySet());
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
+        List fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        Iterator<String> itr = fieldNames.iterator();
+        Iterator itr = fieldNames.iterator();
+
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
-                hashData.append(fieldValue);
                 try {
-                	query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                    //Build query
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                     query.append('=');
                     query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-				} catch (UnsupportedEncodingException e) {}
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
 
                 if (itr.hasNext()) {
                     query.append('&');
@@ -203,10 +207,11 @@ public class OrderMallController {
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = VNPayConfig.Sha256(VNPayConfig.vnp_HashSecret + hashData.toString());
-        queryUrl += "&vnp_SecureHashType=SHA256&vnp_SecureHash=" + vnp_SecureHash;
+        String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.vnp_HashSecret, hashData.toString());
+        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+
         String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + queryUrl;
-        JsonObject job = new JsonObject();
+        com.google.gson.JsonObject job = new JsonObject();
         job.addProperty("code", "00");
         job.addProperty("message", "success");
         job.addProperty("data", paymentUrl);

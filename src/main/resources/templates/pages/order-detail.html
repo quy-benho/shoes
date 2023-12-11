@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dang Store','order-detail')">
+<head th:replace="pages/header::head-fragment('Quy Shoes','order-detail')">
 </head>
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
 <body>
@@ -50,8 +50,8 @@
                                     <div class="order-status" th:text="${orderDetailVO.orderStatusString}" style="font-size: 120%;"></div>
                                     <div class="order-desc">
                                         <th:block th:if="${orderDetailVO.orderStatus==0}">Vui lòng hoàn tất thanh toán càng sớm càng tốt</th:block>
-                                        <th:block th:if="${orderDetailVO.orderStatus==1}">Xác nhận đặt hàng tại Thu Dang Store</th:block>
-                                        <th:block th:if="${orderDetailVO.orderStatus==2}">Cảm ơn bạn đã tin tưởng Thu Dang Store</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==1}">Xác nhận đặt hàng tại Quy's Shoes</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==2}">Cảm ơn bạn đã tin tưởng Quy's Shoes</th:block>
                                         <th:block th:if="${orderDetailVO.orderStatus==3}">Sản phẩm bạn đặt đã hết, hàng đang về. Vui lòng chờ nhé !</th:block>
                                         <th:block th:if="${orderDetailVO.orderStatus==4}">Vui lòng chờ giao hàng</th:block>
                                         <th:block th:if="${orderDetailVO.orderStatus==5}">Sản phẩm đang được giao đến cho bạn</th:block>
@@ -160,7 +160,7 @@
                                 <table class="info-table">
                                     <tbody>
                                     <tr>
-                                        <td th:text="${orderDetailVO.userAddress}">Thu Dang Store</td>
+                                        <td th:text="${orderDetailVO.userAddress}">Quy's Shoes</td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dang Store','detail')">
+<head th:replace="pages/header::head-fragment('Quy Shoes','detail')">
 </head>
 <body>
 <header th:replace="pages/header::header-fragment"></header>
@@ -11,7 +11,7 @@
 
     <div class="dc">
         <div class="content w">
-            <div class="title fl">Thông tin chi tiết sản phẩm</div>
+            <div class="title fl">Chi tiết sản phẩm</div>
             <div class="clear"></div>
         </div>
     </div>
@@ -23,8 +23,8 @@
             </div>
         </div>
         <div class="right fr">
-            <div class="h3 p10 mt20" th:text="${goodsDetail.goodsName}">Thu Dang Store</div>
-            <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.goodsIntro}">Thu Dang Store</div>
+            <div class="h3 p10 mt20" th:text="${goodsDetail.goodsName}">Quy's Shoes</div>
+            <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.goodsIntro}">Quy's Shoes</div>
             <h4>Chọn màu:</h4>
             <select class="form-control col-sm-4 custom-select"
                     id="selectColor"
@@ -42,7 +42,7 @@
             <div th:if="${goodsDetail.sellingPrice} < ${goodsDetail.originalPrice}" class="item_price mr40 ml20 mt10">
                 <th:block th:text="'Giá sale: ' + ${goodsDetail.formatPrice()}"></th:block>
                 <del>
-                    <div th:text="'Giá goc: ' + ${goodsDetail.formatOriginalPrice()}"></div>
+                    <div th:text="'Giá gốc: ' + ${goodsDetail.formatOriginalPrice()}"></div>
                 </del>
             </div>
             <div th:if="${goodsDetail.sellingPrice} > ${goodsDetail.originalPrice}" class="item_price mr40 ml20 mt10">

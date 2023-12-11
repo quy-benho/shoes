@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head-fragment(title,path)">
     <meta charset="UTF-8">
-    <title>Thu Dang Store</title>
+    <title>Quý Shoes Store</title>
     <link rel="stylesheet" th:href="@{/Appdata/css/swiper-bundle.min.css}">
     <link rel="stylesheet" th:href="@{/Appdata/css/iconfont.css}">
     <link rel="stylesheet" th:href="@{/Appdata/css/common.css}">
@@ -14,7 +14,7 @@
 <nav id="nav" th:fragment="nav-fragment">
     <div class="banner_x center">
         <div class="mainmenu">
-            <a th:href="@{/index}"><h1>Thu Dang Store</h1></a>
+            <a th:href="@{/index}"><h1>Quy's Shoes</h1></a>
             <div class="fr">
                 <div class="search">
                     <input class="text" type="text" id="keyword" autocomplete="off">
@@ -30,11 +30,12 @@
 <header id="header" th:fragment="header-fragment">
     <div class="center">
         <ul class="fl">
+
             <li><a th:href="@{/index}">Trang chủ</a></li>
-            <li><a th:href="@{/listing?orderBy=new}">Giày</a></li>
-            <li><a th:href="@{/admin}">Admin</a></li>
-            <li><a href="https://edu.csdn.net/course/detail/26258">Tin tức</a></li>
-            <li><a href="https://juejin.im/book/5da2f9d4f265da5b81794d48?referrer=59199e22a22b9d0058279886">Liên hệ</a></li>
+            <li><a th:href="@{/listing?orderBy=new}">Sản phẩm</a></li>
+            <li><a th:href="@{/admin}">Kênh Người Bán</a></li>
+            <li><a href="#">Tin tức</a></li>
+            <li><a href="#">Liên hệ</a></li>
 
         </ul>
         <div class="fr">
@@ -70,7 +71,8 @@
                 </div>
             </th:block>
             <th:block th:if="${session.User==null}">
-                <ul class="login">
+                <ul class="login" style="margin-bottom: 30px"
+                >
                     <li><a th:href="@{/login}">Đăng nhập</a></li>
                     <li><a th:href="@{/register}">Đăng ký</a></li>
                 </ul>

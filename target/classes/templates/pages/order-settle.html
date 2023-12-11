@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dang Store','order-detail')">
+<head th:replace="pages/header::head-fragment('Quy Shoes','order-detail')">
 </head>
 <link th:href="@{/Appdata/css/bootstrap-modal.css}" rel="stylesheet">
 <body>
@@ -75,7 +75,7 @@
                                             <td class="col col-name">
                                                 <p class="name">
                                                     <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
-                                                       th:text="${item.goodsName}">Thu Dang Store</a>
+                                                       th:text="${item.goodsName}">Quy's Shoes</a>
                                                 </p>
                                             </td>
                                             <td class="col col-price"><p class="price"

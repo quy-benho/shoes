@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <groupId>com.adc.eshop</groupId>
-    <artifactId>Thu-Dang</artifactId>
+    <artifactId>Quy-Shoes</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Thu-Dang-Store</name>
+    <name>Quy-Shoes-Store</name>
     <description>Website Ban Giay</description>
 
     <parent>

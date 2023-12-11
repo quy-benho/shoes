@@ -1,5 +1,5 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="pages/header::head-fragment('Thu Dan Store','index')">
+<head th:replace="pages/header::head-fragment('Quy shoes','index')">
 </head>
 <body>
 <header th:replace="pages/header::header-fragment"></header>
@@ -9,11 +9,11 @@
         <div class="all-sort-list">
             <th:block th:each="category : ${categories}">
 	            <div class="item">
-	                <h3><span> >> </span><a href="##"><th:block th:text="${category.categoryName}"></th:block></a></h3>
+	                <h3><span>  </span><a href="##" ><th:block th:text="${category.categoryName}" style="text-decoration: none;"></th:block></a></h3>
 	                <div class="item-list clearfix">
 	                    <div class="subitem">
 <!-- 	                        <th:block th:each="secondLevelCategory : ${category.secondLevelCategoryVOS}"> -->
-		                        <dl class="fore1">
+		                        <dl class="fore1" >
 		                            <dt><a href="#"><th:block th:text="${category.categoryName}"></th:block></a></dt>
 		                            <dd>
 		                                <th:block th:each="secondLevelCategory : ${category.secondLevelCategoryVOS}">
@@ -31,7 +31,7 @@
 	            </div>
             </th:block>
             <div class="item">
-                <h3><span> >> </span><a href="##">Màu sắc</th:block></a></h3>
+                <h3><span>  </span><a href="##">Màu sắc</th:block></a></h3>
                 <div class="item-list clearfix">
                     <div class="subitem">
                         <dl class="fore1">
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="item">
-                <h3><span> >> </span><a href="##">Các size có sẵn</th:block></a></h3>
+                <h3><span>  </span><a href="##">Các size có sẵn</th:block></a></h3>
                 <div class="item-list clearfix">
                     <div class="subitem">
                         <dl class="fore1">
@@ -126,7 +126,7 @@
 
     <div id="flash">
         <h2>Sản phẩm hot</h2>
-        <a href="/listing?orderBy=new" class="more">Xem thêm >></a>
+        <a href="/listing?orderBy=new" class="more">Xem thêm </a>
         <ul>
             <th:block th:unless="${#lists.isEmpty(newGoodses)}">
                 <th:block th:each="newGoods : ${newGoodses}">
@@ -143,7 +143,7 @@
             <th:block th:if="${#lists.isEmpty(newGoodses)}">
                 <li>
                     <a href="##">
-                        <img src="./Appdata/image/sub_banner/m6.jpg" alt=""/>
+                        <img src="./Appdata/image/sub_banner/m1.jpg" alt=""/>
                         <p class="name">Giày</p>
                         <p class="discount"></p>
                         <p class="price">169000</p>
@@ -187,7 +187,7 @@
 
     <div id="recommend">
         <h2>Sản phẩm bán chạy</h2>
-        <a href="/listing?orderBy=new" class="more">Xem thêm >></a>
+        <a href="/listing?orderBy=new" class="more">Xem thêm </a>
         <ul>
             <th:block th:unless="${#lists.isEmpty(recommendGoodses)}">
                 <th:block th:each="recommendGoods : ${recommendGoodses}">

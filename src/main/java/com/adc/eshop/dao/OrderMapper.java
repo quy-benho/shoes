@@ -1,6 +1,8 @@
 package com.adc.eshop.dao;
 
 import com.adc.eshop.controller.vo.OrderCustomVO;
+import com.adc.eshop.controller.vo.ProductBestSeller;
+import com.adc.eshop.controller.vo.ReportDashBoard;
 import org.apache.ibatis.annotations.Param;
 
 import com.adc.eshop.entity.Order;
@@ -38,4 +40,8 @@ public interface OrderMapper {
     List<OrderCustomVO> getTotalByDate();
 
     int changeOrderStatus(Long orderId, int orderStatus);
+
+    ReportDashBoard getReportDashBoard();
+
+    List<ProductBestSeller> getProductBestSeler();
 }

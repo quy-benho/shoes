@@ -396,4 +396,14 @@ public class OrderServiceImpl implements OrderService {
             return ServiceResultEnum.DB_ERROR.getResult();
         }
 	}
+
+    @Override
+    public ReportDashBoard getReportDashBoard() {
+        return orderMapper.getReportDashBoard();
+    }
+
+    @Override
+    public List<ProductBestSeller> getProductBestSeler() {
+        return orderMapper.getProductBestSeler();
+    }
 }

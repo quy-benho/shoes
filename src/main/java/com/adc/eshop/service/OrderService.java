@@ -53,4 +53,8 @@ public interface OrderService {
 
 
     String changeOrderStatus(Order order);
+
+    ReportDashBoard getReportDashBoard();
+
+    List<ProductBestSeller> getProductBestSeler();
 }

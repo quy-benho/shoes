@@ -5,7 +5,7 @@
         <id column="order_id" jdbcType="BIGINT" property="orderId"/>
         <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="total_price" jdbcType="INTEGER" property="totalPrice"/>
+        <result column="total_price" jdbcType="DOUBLE" property="totalPrice"/>
         <result column="pay_status" jdbcType="TINYINT" property="payStatus"/>
         <result column="pay_type" jdbcType="TINYINT" property="payType"/>
         <result column="pay_time" jdbcType="TIMESTAMP" property="payTime"/>
@@ -22,6 +22,17 @@
         <result column="sum_price" jdbcType="INTEGER" property="sumPrice" />
         <result column="date_order" jdbcType="TIMESTAMP" property="dateOrder" />
     </resultMap>
+    <resultMap id="ReportDashBoard" type="com.adc.eshop.controller.vo.ReportDashBoard">
+        <result column="orders" jdbcType="INTEGER" property="orders" />
+        <result column="products" jdbcType="INTEGER" property="products" />
+        <result column="balance" jdbcType="DOUBLE" property="balance" />
+    </resultMap>
+
+    <resultMap id="ProductBestSeller" type="com.adc.eshop.controller.vo.ProductBestSeller">
+        <result column="productName" jdbcType="VARCHAR" property="productName" />
+        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    </resultMap>
+
     <sql id="Base_Column_List">
     order_id, order_no, user_id, total_price, pay_status, pay_type, pay_time, order_status,
     extra_info, user_name, user_phone, user_address, is_deleted, create_time, update_time
@@ -34,10 +45,35 @@
     	select
 	    sum(total_price) AS sum_price, DATE_FORMAT(create_time,'%Y/%m/%d') as date_order, STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
 	    from tb_order
-	    WHERE order_status = 2
+	    WHERE pay_status = 1
 	    GROUP BY DATE_FORMAT(create_time,'%Y/%m/%d'), STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
 	    ORDER BY STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d') ASC
   </select>
+
+    <select id="getReportDashBoard" resultMap="ReportDashBoard">
+        with orders  as (
+            select count(order_id) AS orders from tb_order WHERE pay_status = 1
+            ),
+             products as(
+                 select count(goods_id) AS products from tb_goods_info where goods_sell_status = 0
+             ),
+             balance as (
+                 select sum(total_price) AS balance from tb_order WHERE pay_status = 1
+             )
+        select orders.orders, products.products, balance.balance
+        from orders, products, balance;
+    </select>
+
+    <select id="getProductBestSeler" resultMap="ProductBestSeller">
+        select t3.goods_name as productName, sum(t1.goods_count) as quantity
+        from tb_order_item t1
+                 inner join tb_order t2 on t1.order_id = t2.order_id
+                 inner join tb_goods_info t3 on t1.goods_id = t3.goods_id
+        WHERE t2.pay_status = 1
+        group by t3.goods_name
+        order by count(t1.goods_count) desc;
+    </select>
+
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select

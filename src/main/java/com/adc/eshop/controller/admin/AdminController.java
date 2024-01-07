@@ -2,7 +2,10 @@
 package com.adc.eshop.controller.admin;
 
 import com.adc.eshop.controller.vo.OrderCustomVO;
+import com.adc.eshop.controller.vo.ProductBestSeller;
+import com.adc.eshop.controller.vo.ReportDashBoard;
 import com.adc.eshop.service.OrderService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -41,13 +44,25 @@ public class AdminController {
     }
 
     @GetMapping({"", "/", "/index", "/index.html"})
-    public String index(HttpServletRequest request, Model model) {
+    public String index(HttpServletRequest request, Model model, @RequestParam(value = "order-date", required = false) String date) {
         Map<String, Integer> graphData = new TreeMap<>();
         List<OrderCustomVO> list = orderService.getTotalByDate();
+        System.out.println("date:  " + date);
         for(OrderCustomVO od : list){
             graphData.put(od.getDateOrder(), od.getSumPrice());
         }
+        ReportDashBoard reportDashBoard = orderService.getReportDashBoard();
+        List<ProductBestSeller> productBestSellers = orderService.getProductBestSeler();
+        int count = 1;
+        for (ProductBestSeller productBestSeller : productBestSellers){
+            productBestSeller.setId(count);
+            count ++;
+        }
+
+
         model.addAttribute("chartData", graphData);
+        model.addAttribute("reportDashBoard", reportDashBoard);
+        model.addAttribute("productBestSellers", productBestSellers);
         request.setAttribute("path", "index");
         return "admin/index";
     }

@@ -12,7 +12,8 @@
     <script type="text/javascript"
             src="https://www.gstatic.com/charts/loader.js"></script>
 </head> -->
-<body >
+
+<body>
 <div class="wrapper">
 
     <div th:replace="admin/header::header-nav"></div>
@@ -30,19 +31,94 @@
                 <div class="card-header">
                     <h3 class="card-title">Trang chủ</h3>
                 </div> <!-- /.card-body -->
-                <div class="card-body">
-    
-                <div align="center" style="width: 1000px;">
-                    <h2>Thống kê doanh thu</h2>
-                    <div id="chart_div"></div>
-                    <div id="piechart" style="width: 600px; height: 400px;"></div>
+
+                <div class="row" style="margin: 10px 10px 20px 10px;">
+                    <div class="col-sm-4">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner" style="background: #47a447;">
+                                <p style="font-weight:bold; font-size: 30px;">SẢN PHẨM</p>
+                                <h3 th:text="${reportDashBoard.getProducts()}">150</h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-server" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner" style="background: #985f0d;">
+                                <p style="font-weight:bold; font-size: 30px;">ĐƠN HÀNG</p>
+                                <h3 th:text="${reportDashBoard.getOrders()}">150</h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-truck" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner" style="background: #007bff;">
+                                <p style="font-weight:bold; font-size: 30px;">DOANH THU</p>
+                                <h3 th:text="${#numbers.formatDecimal(reportDashBoard.getBalance(), 0 , 'COMMA', 0, 'POINT')}">
+                                    150</h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-usd" aria-hidden="true"></i>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
+
+
+                <div class="row" style="margin: 10px 10px 20px 10px;">
+                    <div class="col-sm-6 border">
+                        <h2 style="text-align: center; margin-top: 20px; margin-bottom: 30px;">THỐNG KÊ DOANH THU</h2>
+                        <form th:action="@{/admin/index}" method="get" >
+                            <div style="text-align: right;">
+                                <label for="order-date">FILTER DATE:</label>
+                                <input type="date" id="order-date" name="order-date"/>
+                            </div>
+                            <div>
+                                <button type="submit" class="button">Filter</button>
+                            </div>
+                            <div id="chart_div"></div>
+                            <div id="piechart" style="height: 500px;"></div>
+                        </form>
+                    </div>
+
+                    <div class="col-sm-6 border">
+                        <h2 style="text-align: center; margin-top: 20px; margin-bottom: 30px;">SẢN PHẨM BÁN CHẠY</h2>
+                        <table class="table  table-bordered table-hover table-striped text-center">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Số lượng</th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="productBestSeller : ${productBestSellers}">
+                            <tr>
+                                <th scope="row" th:text="${productBestSeller.getId()}">1</th>
+                                <td th:text="${productBestSeller.getProductName()}">Mark</td>
+                                <td th:text="${productBestSeller.getQuantity()}">Otto</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content -->
+
+
+            </div>
+        </div><!-- /.container-fluid -->
     </div>
-    <div th:replace="admin/footer::footer-fragment"></div>
+    <!-- /.content -->
+</div>
+<div th:replace="admin/footer::footer-fragment"></div>
 </div>
 
 <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
@@ -51,14 +127,21 @@
 <!-- AdminLTE App -->
 <script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
 <script type="text/javascript"
-            src="https://www.gstatic.com/charts/loader.js"></script>
+        src="https://www.gstatic.com/charts/loader.js"></script>
 <script th:inline="javascript">
+
     var real_data = [[${chartData}]];
     console.log(real_data);
 
-    $(document).ready(function() {
+    var date =  $('#filter-order-date').val();
+
+
+    console.log("date", date);
+
+
+    $(document).ready(function () {
         google.charts.load('current', {
-            packages : [ 'corechart', 'bar' ]
+            packages: ['corechart', 'bar']
         });
         google.charts.setOnLoadCallback(drawColumnChart);
         google.charts.setOnLoadCallback(drawPieChart);
@@ -68,16 +151,16 @@
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Date');
         data.addColumn('number', 'Total');
-        Object.keys(real_data).forEach(function(key) {
-            data.addRow([ key, real_data[key] ]);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
         });
         var options = {
-            title : 'Blog stats',
-            hAxis : {
-                title : 'Date',
+            title: 'Blog status',
+            hAxis: {
+                title: 'Date',
             },
-            vAxis : {
-                title : 'Total Count'
+            vAxis: {
+                title: 'Total Count'
             }
         };
         var chart = new google.visualization.ColumnChart(document
@@ -89,16 +172,17 @@
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Date');
         data.addColumn('number', 'Total');
-        Object.keys(real_data).forEach(function(key) {
-            data.addRow([ key, real_data[key] ]);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
         });
         var options = {
-            title : 'Blog stats'
+            title: 'Blog stats'
         };
         var chart = new google.visualization.PieChart(document
             .getElementById('piechart'));
         chart.draw(data, options);
     }
+
 </script>
 
 </body>

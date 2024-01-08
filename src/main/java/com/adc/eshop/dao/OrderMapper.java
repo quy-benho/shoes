@@ -37,7 +37,7 @@ public interface OrderMapper {
 
     int checkDone(@Param("orderIds") List<Long> asList);
 
-    List<OrderCustomVO> getTotalByDate();
+    List<OrderCustomVO> getTotalByDate(String startDate, String endDate);
 
     int changeOrderStatus(Long orderId, int orderStatus);
 

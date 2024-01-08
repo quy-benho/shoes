@@ -49,7 +49,7 @@ public interface OrderService {
     List<OrderItemVO> getOrderItems(Long id);
     
 
-    List<OrderCustomVO> getTotalByDate();
+    List<OrderCustomVO> getTotalByDate(String startDate, String endDate);
 
 
     String changeOrderStatus(Order order);

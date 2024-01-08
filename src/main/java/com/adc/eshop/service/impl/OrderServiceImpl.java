@@ -43,8 +43,8 @@ public class OrderServiceImpl implements OrderService {
     private GoodsMapper goodsMapper;
 
     @Override
-    public List<OrderCustomVO> getTotalByDate() {
-        return orderMapper.getTotalByDate();
+    public List<OrderCustomVO> getTotalByDate(String startDate, String endDate) {
+        return orderMapper.getTotalByDate(startDate, endDate);
     }
 
     @Override

@@ -77,16 +77,18 @@
                 <div class="row" style="margin: 10px 10px 20px 10px;">
                     <div class="col-sm-6 border">
                         <h2 style="text-align: center; margin-top: 20px; margin-bottom: 30px;">THỐNG KÊ DOANH THU</h2>
-                        <form th:action="@{/admin/index}" method="get" >
+                        <form th:action="@{/admin/index}" method="get">
                             <div style="text-align: right;">
-                                <label for="order-date">FILTER DATE:</label>
-                                <input type="date" id="order-date" name="order-date"/>
+                                <label for="start_date" style="margin-right: 5px;">Từ</label>
+                                <input type="date" id="start_date" name="start_date"
+                                       style="margin-right: 5px; border-style: dashed;"/>
+                                <label for="end_date" style="margin-right: 5px;">Đến</label>
+                                <input type="date" id="end_date" name="end_date"
+                                       style="margin-right: 10px;border-style: dashed;"/>
+                                <button type="submit" class="btn btn-light">Tìm Kiếm</button>
+                                <div id="chart_div"></div>
+                                <div id="piechart" style="height: 500px;"></div>
                             </div>
-                            <div>
-                                <button type="submit" class="button">Filter</button>
-                            </div>
-                            <div id="chart_div"></div>
-                            <div id="piechart" style="height: 500px;"></div>
                         </form>
                     </div>
 
@@ -132,12 +134,6 @@
 
     var real_data = [[${chartData}]];
     console.log(real_data);
-
-    var date =  $('#filter-order-date').val();
-
-
-    console.log("date", date);
-
 
     $(document).ready(function () {
         google.charts.load('current', {

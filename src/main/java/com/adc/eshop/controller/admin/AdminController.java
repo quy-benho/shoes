@@ -44,10 +44,12 @@ public class AdminController {
     }
 
     @GetMapping({"", "/", "/index", "/index.html"})
-    public String index(HttpServletRequest request, Model model, @RequestParam(value = "order-date", required = false) String date) {
+    public String index(HttpServletRequest request, Model model,
+                        @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
+                        @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate
+    ) {
         Map<String, Integer> graphData = new TreeMap<>();
-        List<OrderCustomVO> list = orderService.getTotalByDate();
-        System.out.println("date:  " + date);
+        List<OrderCustomVO> list = orderService.getTotalByDate(startDate, endDate);
         for(OrderCustomVO od : list){
             graphData.put(od.getDateOrder(), od.getSumPrice());
         }
@@ -67,6 +69,20 @@ public class AdminController {
         return "admin/index";
     }
 
+    @GetMapping("/filter-date")
+    public String filterDate(Model model,
+                        @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
+                        @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate
+    ) {
+        Map<String, Integer> graphData = new TreeMap<>();
+        List<OrderCustomVO> list = orderService.getTotalByDate(startDate, endDate);
+        for(OrderCustomVO od : list){
+            graphData.put(od.getDateOrder(), od.getSumPrice());
+        }
+        model.addAttribute("chartData", graphData);
+        return "";
+    }
+
     @PostMapping(value = "/login")
     public String login(@RequestParam("userName") String userName,
                         @RequestParam("password") String password,
@@ -81,7 +97,7 @@ public class AdminController {
             return "admin/login";
         }
         String kaptchaCode = session.getAttribute("verifyCode") + "";
-        if (StringUtils.isEmpty(kaptchaCode) || !verifyCode.equals(kaptchaCode)) {
+        if (StringUtils.isEmpty(kaptchaCode) || !verifyCode.toLowerCase().equals(kaptchaCode.toLowerCase())) {
             session.setAttribute("errorMsg", "Verify fail !");
             return "admin/login";
         }

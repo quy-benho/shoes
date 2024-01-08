@@ -19,49 +19,64 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <resultMap id="BaseCustomResult" type="com.adc.eshop.controller.vo.OrderCustomVO">
-        <result column="sum_price" jdbcType="INTEGER" property="sumPrice" />
-        <result column="date_order" jdbcType="TIMESTAMP" property="dateOrder" />
+        <result column="sum_price" jdbcType="INTEGER" property="sumPrice"/>
+        <result column="date_order" jdbcType="TIMESTAMP" property="dateOrder"/>
     </resultMap>
     <resultMap id="ReportDashBoard" type="com.adc.eshop.controller.vo.ReportDashBoard">
-        <result column="orders" jdbcType="INTEGER" property="orders" />
-        <result column="products" jdbcType="INTEGER" property="products" />
-        <result column="balance" jdbcType="DOUBLE" property="balance" />
+        <result column="orders" jdbcType="INTEGER" property="orders"/>
+        <result column="products" jdbcType="INTEGER" property="products"/>
+        <result column="balance" jdbcType="DOUBLE" property="balance"/>
     </resultMap>
 
     <resultMap id="ProductBestSeller" type="com.adc.eshop.controller.vo.ProductBestSeller">
-        <result column="productName" jdbcType="VARCHAR" property="productName" />
-        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-    order_id, order_no, user_id, total_price, pay_status, pay_type, pay_time, order_status,
+        order_id
+        , order_no, user_id, total_price, pay_status, pay_type, pay_time, order_status,
     extra_info, user_name, user_phone, user_address, is_deleted, create_time, update_time
-  </sql>
+    </sql>
     <sql id="BaseCustomResult">
-    create_time, create_time
-  </sql>
+        create_time
+        , create_time
+    </sql>
 
-   <select id="getTotalByDate" resultMap="BaseCustomResult">
-    	select
-	    sum(total_price) AS sum_price, DATE_FORMAT(create_time,'%Y/%m/%d') as date_order, STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
-	    from tb_order
-	    WHERE pay_status = 1
-	    GROUP BY DATE_FORMAT(create_time,'%Y/%m/%d'), STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
-	    ORDER BY STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d') ASC
-  </select>
+    <select id="getTotalByDate" parameterType="java.lang.String" resultMap="BaseCustomResult">
+        select
+        sum(total_price) AS sum_price, DATE_FORMAT(create_time,'%Y/%m/%d') as date_order,
+        STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
+        from tb_order
+        <where>
+            pay_status = 1
+            <if test="startDate != null and startDate != ''">
+                and ( #{startDate,jdbcType=VARCHAR} is null or (STR_TO_DATE(DATE_FORMAT(pay_time, '%Y %M %d'), '%Y %M
+                %d')
+                >=
+                #{startDate,jdbcType=VARCHAR}))
+            </if>
+            <if test="endDate!= null and endDate != ''">
+                and ( #{endDate,jdbcType=VARCHAR} is null or ( #{endDate,jdbcType=VARCHAR}>=
+                STR_TO_DATE(DATE_FORMAT(pay_time, '%Y %M %d'), '%Y %M %d')))
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(create_time,'%Y/%m/%d'), STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
+        ORDER BY STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d') ASC
+    </select>
 
     <select id="getReportDashBoard" resultMap="ReportDashBoard">
-        with orders  as (
-            select count(order_id) AS orders from tb_order WHERE pay_status = 1
-            ),
-             products as(
-                 select count(goods_id) AS products from tb_goods_info where goods_sell_status = 0
-             ),
-             balance as (
-                 select sum(total_price) AS balance from tb_order WHERE pay_status = 1
-             )
+        with orders as (select count(order_id) AS orders
+                        from tb_order
+                        WHERE pay_status = 1),
+             products as (select count(goods_id) AS products from tb_goods_info where goods_sell_status = 0),
+             balance as (select sum(total_price) AS balance
+                         from tb_order
+                         WHERE pay_status = 1)
         select orders.orders, products.products, balance.balance
-        from orders, products, balance;
+        from orders,
+             products,
+             balance;
     </select>
 
     <select id="getProductBestSeler" resultMap="ProductBestSeller">
@@ -102,7 +117,7 @@
         from tb_order
         <where>
             <if test="orderNo!=null and orderNo!=''">
-            	<bind name="orderNo_" value="'%' + orderNo + '%'" />
+                <bind name="orderNo_" value="'%' + orderNo + '%'"/>
                 and order_no like #{orderNo_}
             </if>
             <if test="userId!=null and userId!=''">
@@ -163,21 +178,22 @@
         </where>
     </select>
     <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    update tb_order set is_deleted=1
-    where order_id = #{orderId,jdbcType=BIGINT} and is_deleted=0
-  </update>
+        update tb_order
+        set is_deleted=1
+        where order_id = #{orderId,jdbcType=BIGINT}
+          and is_deleted = 0
+    </update>
     <insert id="insert" parameterType="com.adc.eshop.entity.Order">
-    insert into tb_order (order_id, order_no, user_id, 
-      total_price, pay_status, pay_type, 
-      pay_time, order_status, extra_info, 
-      user_address,is_deleted, create_time, update_time
-      )
-    values (#{orderId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
-      #{totalPrice,jdbcType=INTEGER}, #{payStatus,jdbcType=TINYINT}, #{payType,jdbcType=TINYINT}, 
-      #{payTime,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=TINYINT}, #{extraInfo,jdbcType=VARCHAR}, 
-       #{userAddress,jdbcType=VARCHAR},#{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
+        insert into tb_order (order_id, order_no, user_id,
+                              total_price, pay_status, pay_type,
+                              pay_time, order_status, extra_info,
+                              user_address, is_deleted, create_time, update_time)
+        values (#{orderId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT},
+                #{totalPrice,jdbcType=INTEGER}, #{payStatus,jdbcType=TINYINT}, #{payType,jdbcType=TINYINT},
+                #{payTime,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=TINYINT}, #{extraInfo,jdbcType=VARCHAR},
+                #{userAddress,jdbcType=VARCHAR}, #{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="orderId"
             parameterType="com.adc.eshop.entity.Order">
         insert into tb_order
@@ -303,10 +319,11 @@
 
     <update id="changeOrderStatus">
         update tb_order
-        set order_status = #{orderStatus}, update_time = now()
+        set order_status = #{orderStatus},
+            update_time  = now()
         where order_id = #{orderId}
     </update>
-    
+
     <update id="updateByPrimaryKeySelective" parameterType="com.adc.eshop.entity.Order">
         update tb_order
         <set>
@@ -350,19 +367,19 @@
         where order_id = #{orderId,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.adc.eshop.entity.Order">
-    update tb_order
-    set order_no = #{orderNo,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=BIGINT},
-      total_price = #{totalPrice,jdbcType=INTEGER},
-      pay_status = #{payStatus,jdbcType=TINYINT},
-      pay_type = #{payType,jdbcType=TINYINT},
-      pay_time = #{payTime,jdbcType=TIMESTAMP},
-      order_status = #{orderStatus,jdbcType=TINYINT},
-      extra_info = #{extraInfo,jdbcType=VARCHAR},
-      user_address = #{userAddress,jdbcType=VARCHAR},
-      is_deleted = #{isDeleted,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where order_id = #{orderId,jdbcType=BIGINT}
-  </update>
+        update tb_order
+        set order_no     = #{orderNo,jdbcType=VARCHAR},
+            user_id      = #{userId,jdbcType=BIGINT},
+            total_price  = #{totalPrice,jdbcType=INTEGER},
+            pay_status   = #{payStatus,jdbcType=TINYINT},
+            pay_type     = #{payType,jdbcType=TINYINT},
+            pay_time     = #{payTime,jdbcType=TIMESTAMP},
+            order_status = #{orderStatus,jdbcType=TINYINT},
+            extra_info   = #{extraInfo,jdbcType=VARCHAR},
+            user_address = #{userAddress,jdbcType=VARCHAR},
+            is_deleted   = #{isDeleted,jdbcType=TINYINT},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            update_time  = #{updateTime,jdbcType=TIMESTAMP}
+        where order_id = #{orderId,jdbcType=BIGINT}
+    </update>
 </mapper>

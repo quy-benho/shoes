@@ -25,6 +25,6 @@ public interface GoodsDetailMapper {
 
     List<String> getListColorById(@Param("goodsId") Long goodsId);
 
-    List<Integer> getListSizeByColor(@Param("goodsColor") String goodsColor);
+    List<Integer> getListSizeByColor(@Param("goodsColor") String goodsColor, String goodId);
 
 }

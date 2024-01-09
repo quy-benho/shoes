@@ -25,5 +25,5 @@ public interface GoodsDetailService {
 
     List<String> getListColorById(Long goodsId);
 
-    List<Integer> getListSizeByColor(String goodsColor);
+    List<Integer> getListSizeByColor(String goodsColor, String goodId);
 }

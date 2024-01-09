@@ -93,7 +93,7 @@ public class GoodsMallController {
     	colors.forEach(color -> {
     		Map<String, Object> item = new HashMap<String, Object>();
     		item.put("color", color);
-    		item.put("sizes", goodsDetailService.getListSizeByColor(color));
+    		item.put("sizes", goodsDetailService.getListSizeByColor(color, String.valueOf(goodsId)));
     		result.add(item);
     	});
         return result;

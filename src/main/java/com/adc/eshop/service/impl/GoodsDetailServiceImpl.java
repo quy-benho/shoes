@@ -65,8 +65,8 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
     }
 
     @Override
-    public List<Integer> getListSizeByColor(String goodsColor) {
-        return goodsDetailMapper.getListSizeByColor(goodsColor);
+    public List<Integer> getListSizeByColor(String goodsColor, String goodId) {
+        return goodsDetailMapper.getListSizeByColor(goodsColor, goodId);
     }
 
 	@Override

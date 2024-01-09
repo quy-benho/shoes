@@ -7,5 +7,6 @@ import lombok.Data;
 public class ProductBestSeller {
     private int Id;
     private String productName;
+    private String productId;
     private int quantity;
 }

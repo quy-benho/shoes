@@ -26,13 +26,13 @@
     <select id="getListColorById" resultType="string">
         select goods_color 
         from tb_goods_detail
-        WHERE goods_id=#{goodsId}
+        WHERE goods_id=#{goodsId} and is_deleted = 0
         group by goods_color
     </select>
     <select id="getListSizeByColor" resultType="int">
         select goods_size
         from tb_goods_detail
-        WHERE goods_color=#{goodsColor}
+        WHERE goods_color=#{goodsColor} and goods_id = #{goodId} and is_deleted = 0
     </select>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

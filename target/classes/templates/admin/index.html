@@ -33,7 +33,7 @@
                 </div> <!-- /.card-body -->
 
                 <div class="row" style="margin: 10px 10px 20px 10px;">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <!-- small box -->
                         <div class="small-box bg-aqua">
                             <div class="inner" style="background: #47a447;">
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <!-- small box -->
                         <div class="small-box bg-aqua">
                             <div class="inner" style="background: #985f0d;">
@@ -53,11 +53,23 @@
                                 <h3 th:text="${reportDashBoard.getOrders()}">150</h3>
                             </div>
                             <div class="icon">
+                                <i class="fa fa-bars" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner" style="background: #47a447;">
+                                <p style="font-weight:bold; font-size: 30px;">ĐƠN HÀNG ĐÃ GIAO</p>
+                                <h3 th:text="${reportDashBoard.getOrdersSuccess()}">150</h3>
+                            </div>
+                            <div class="icon">
                                 <i class="fa fa-truck" aria-hidden="true"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <!-- small box -->
                         <div class="small-box bg-aqua">
                             <div class="inner" style="background: #007bff;">
@@ -105,7 +117,7 @@
                             <tbody th:each="productBestSeller : ${productBestSellers}">
                             <tr>
                                 <th scope="row" th:text="${productBestSeller.getId()}">1</th>
-                                <td th:text="${productBestSeller.getProductName()}">Mark</td>
+                                <td ><a th:text="${productBestSeller.getProductName()}" th:href="@{'http://localhost:28088/goods/detail/'+${productBestSeller.getProductId()}}"></a></td>
                                 <td th:text="${productBestSeller.getQuantity()}">Otto</td>
                             </tr>
                             </tbody>

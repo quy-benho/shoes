@@ -7,5 +7,6 @@ import lombok.Data;
 public class ReportDashBoard {
     private int orders;
     private int products;
+    private int ordersSuccess;
     private double balance;
 }

@@ -26,6 +26,7 @@
         <result column="orders" jdbcType="INTEGER" property="orders"/>
         <result column="products" jdbcType="INTEGER" property="products"/>
         <result column="balance" jdbcType="DOUBLE" property="balance"/>
+        <result column="ordersSuccess" jdbcType="INTEGER" property="ordersSuccess"/>
     </resultMap>
 
     <resultMap id="ProductBestSeller" type="com.adc.eshop.controller.vo.ProductBestSeller">
@@ -49,7 +50,7 @@
         STR_TO_DATE(DATE_FORMAT(create_time,'%Y/%m/%d'), '%Y/%m/%d')
         from tb_order
         <where>
-            pay_status = 1
+            pay_status = 1 and order_status = 2
             <if test="startDate != null and startDate != ''">
                 and ( #{startDate,jdbcType=VARCHAR} is null or (STR_TO_DATE(DATE_FORMAT(pay_time, '%Y %M %d'), '%Y %M
                 %d')
@@ -66,27 +67,22 @@
     </select>
 
     <select id="getReportDashBoard" resultMap="ReportDashBoard">
-        with orders as (select count(order_id) AS orders
-                        from tb_order
-                        WHERE pay_status = 1),
+        with orders as (select count(order_id) AS orders from tb_order WHERE pay_status = 1),
              products as (select count(goods_id) AS products from tb_goods_info where goods_sell_status = 0),
-             balance as (select sum(total_price) AS balance
-                         from tb_order
-                         WHERE pay_status = 1)
-        select orders.orders, products.products, balance.balance
-        from orders,
-             products,
-             balance;
+             orders_success as (select count(order_id) AS ordersSuccess from tb_order where order_status = 2),
+             balance as (select sum(total_price) AS balance from tb_order WHERE order_status = 2)
+        select orders.orders, products.products, balance.balance, orders_success.ordersSuccess
+        from orders, products, balance, orders_success;
     </select>
 
     <select id="getProductBestSeler" resultMap="ProductBestSeller">
-        select t3.goods_name as productName, sum(t1.goods_count) as quantity
+        select t3.goods_name as productName, t3.goods_id as productId, sum(t1.goods_count) as quantity
         from tb_order_item t1
                  inner join tb_order t2 on t1.order_id = t2.order_id
                  inner join tb_goods_info t3 on t1.goods_id = t3.goods_id
         WHERE t2.pay_status = 1
-        group by t3.goods_name
-        order by count(t1.goods_count) desc;
+        group by t3.goods_name, t3.goods_id
+        order by sum(t1.goods_count) desc;
     </select>
 
 

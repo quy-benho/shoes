@@ -61,26 +61,11 @@ public class AdminController {
             count ++;
         }
 
-
         model.addAttribute("chartData", graphData);
         model.addAttribute("reportDashBoard", reportDashBoard);
         model.addAttribute("productBestSellers", productBestSellers);
         request.setAttribute("path", "index");
         return "admin/index";
-    }
-
-    @GetMapping("/filter-date")
-    public String filterDate(Model model,
-                        @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
-                        @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate
-    ) {
-        Map<String, Integer> graphData = new TreeMap<>();
-        List<OrderCustomVO> list = orderService.getTotalByDate(startDate, endDate);
-        for(OrderCustomVO od : list){
-            graphData.put(od.getDateOrder(), od.getSumPrice());
-        }
-        model.addAttribute("chartData", graphData);
-        return "";
     }
 
     @PostMapping(value = "/login")
